@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product | SNEHKRITI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body class="bg-[#f8f1f0] text-[#5e503f] font-['Playfair_Display']">
+
+  <header class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-[#f8edeb] opacity-60"></div>
+    <div class="relative z-10 container mx-auto px-4 py-8 flex flex-col items-center">
+      <h1 class="text-5xl md:text-7xl font-bold text-[#d4a373] mb-4 flex items-center justify-center gap-2">
+        <span class="handwritten" style="font-family:'Hind',sans-serif;font-weight:600;color:#a17852;">स्नेह</span>
+        <span class="letter italic" style="font-family:'Homemade Apple',cursive;transform:rotate(-2deg);color:#d4a373;">Kriti</span>
+      </h1>
+      <p class="text-xl md:text-2xl handwritten text-[#6c757d] italic">Printed with Love. Felt like a Hug.</p>
+    </div>
+  </header>
+
+  <nav class="container mx-auto px-4 py-6 flex justify-center sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-filter backdrop-blur-lg">
+    <ul class="flex flex-wrap justify-center gap-x-6 gap-y-2 handwritten text-xl">
+      <li><a href="index.html#home" class="hover:text-[#d4a373] transition-all duration-300">Home</a></li>
+      <li><a href="index.html#gallery" class="hover:text-[#d4a373] transition-all duration-300">Gallery</a></li>
+      <li><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300">Shop All</a></li>
+      <li><a href="index.html#custom" class="hover:text-[#d4a373] transition-all duration-300">Custom Orders</a></li>
+      <li><a href="index.html#process" class="hover:text-[#d4a373] transition-all duration-300">The Print Diary</a></li>
+      <li><a href="index.html#about" class="hover:text-[#d4a373] transition-all duration-300">Our Story</a></li>
+      <li class="relative">
+        <a href="cart.html" class="hover:text-[#d4a373] transition-all duration-300 relative">
+          Cart
+          <span id="cart-count-badge" class="absolute -top-2 -right-4 bg-[#d4a373] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center handwritten">0</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <main class="py-12 px-4">
+    <div class="container mx-auto max-w-5xl" id="product-content">
+      <div class="grid md:grid-cols-2 gap-10">
+        <div class="skeleton rounded-xl h-96"></div>
+        <div class="space-y-4">
+          <div class="skeleton h-8 rounded-full w-3/4"></div>
+          <div class="skeleton h-6 rounded-full w-1/4"></div>
+          <div class="skeleton h-20 rounded-xl"></div>
+          <div class="skeleton h-12 rounded-xl"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <a href="cart.html" class="fixed bottom-6 right-6 z-50 bg-[#d4a373] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl hover:bg-[#b08968] transition-all hover:scale-110">
+    🛍️
+    <span id="cart-count-badge-float" class="absolute -top-1 -right-1 bg-[#e91e63] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+  </a>
+
+  <footer class="py-8 px-4 text-center watercolor-bg mt-12">
+    <p class="handwritten text-xl text-[#d4a373]">Made with love & ink-stained hands 🌸</p>
+    <p class="handwritten text-lg text-[#6c757d] mt-1">© 2025 SNEHKRITI · <a href="https://www.instagram.com/snehkriti.in/" target="_blank" class="hover:text-[#d4a373]">@snehkriti.in</a></p>
+  </footer>
+
+  <script type="module" src="src/productDetail.js"></script>
+</body>
+</html>
