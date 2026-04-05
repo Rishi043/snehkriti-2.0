@@ -2,10 +2,7 @@ import { getCart, getCartTotal, getDelivery, clearCart } from './cart.js';
 import { showToast } from './main.js';
 
 function generateOrderId() {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let id = 'ORD-';
-  for (let i = 0; i < 6; i++) id += chars[Math.floor(Math.random() * chars.length)];
-  return id;
+  return 'ORD' + Date.now().toString().slice(-8);
 }
 
 function getField(id) { return document.getElementById(id); }
@@ -103,23 +100,23 @@ function renderSummary() {
   const total = subtotal + delivery;
   const el = document.getElementById('order-summary');
   if (!el) return;
-  const font = "font-family:'Playfair Display',serif;";
+  const font = "font-family:'DM Sans',sans-serif;";
   el.innerHTML = `
     <div class="space-y-2 mb-4">
       ${cart.map(i => `
-        <div class="flex justify-between items-start gap-2 text-sm" style="${font}">
-          <span class="text-[#5e503f]">${i.name} <span class="text-[#d4a373] font-semibold">×${i.qty}</span>${i.size ? ` <span class="bg-[#feeafa] text-[#d4a373] px-2 py-0.5 rounded-full text-xs">${i.size}</span>` : ''}</span>
-          <span class="font-bold text-[#d4a373] whitespace-nowrap">₹${i.price * i.qty}</span>
+        <div class="flex justify-between items-start gap-2" style="${font}font-size:0.88rem;">
+          <span style="color:#2d1f14;">${i.name} <span style="color:#d4a373;font-weight:600;">×${i.qty}</span>${i.size ? ` <span style="background:#feeafa;color:#d4a373;padding:2px 8px;border-radius:20px;font-size:0.72rem;">${i.size}</span>` : ''}</span>
+          <span style="font-weight:700;color:#d4a373;white-space:nowrap;">₹${i.price * i.qty}</span>
         </div>`).join('')}
     </div>
-    <div class="border-t border-[#d4a373] border-opacity-30 pt-3 space-y-1">
-      <div class="flex justify-between text-sm" style="${font}"><span>Subtotal</span><span>₹${subtotal}</span></div>
-      <div class="flex justify-between text-sm" style="${font}"><span>Delivery</span><span>${delivery === 0 ? '<span class="text-green-600 font-semibold">FREE 🎉</span>' : '₹' + delivery}</span></div>
-      <div class="flex justify-between font-bold text-[#d4a373] border-t border-[#d4a373] border-opacity-30 pt-2" style="${font}font-size:1.1rem;">
+    <div style="border-top:1px solid rgba(212,163,115,0.3);padding-top:10px;">
+      <div class="flex justify-between" style="${font}font-size:0.85rem;margin-bottom:4px;"><span>Subtotal</span><span>₹${subtotal}</span></div>
+      <div class="flex justify-between" style="${font}font-size:0.85rem;margin-bottom:4px;"><span>Delivery</span><span>${delivery === 0 ? '<span style="color:#22c55e;font-weight:600;">FREE 🎉</span>' : '₹' + delivery}</span></div>
+      <div class="flex justify-between" style="${font}font-size:1rem;font-weight:700;color:#d4a373;border-top:1px solid rgba(212,163,115,0.3);padding-top:8px;margin-top:4px;">
         <span>Total</span><span>₹${total}</span>
       </div>
     </div>
-    <p class="text-xs text-[#6c757d] italic mt-3 text-center" style="${font}">
+    <p style="${font}font-size:0.75rem;color:#999;text-align:center;margin-top:10px;">
       ${subtotal < 999 ? `✨ Add ₹${999 - subtotal} more for free delivery!` : '🎉 You\'ve got free delivery!'}
     </p>`;
 }
