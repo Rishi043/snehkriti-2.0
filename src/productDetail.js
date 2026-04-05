@@ -96,7 +96,6 @@ if (!product) {
         ${product.note ? `<p style="${DM}font-size:0.78rem;color:#e91e63;background:#feeafa;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;">⚠️ ${product.note}</p>` : ''}
 
         <div style="margin-bottom:14px;">
-          <p style="${DM}font-size:0.78rem;font-weight:600;color:#7a6555;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Size</p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;">${sizeOptions}</div>
           <p id="size-error" style="${DM}font-size:0.78rem;color:#e91e63;margin-top:6px;display:none;">Please select a size</p>
         </div>
@@ -124,7 +123,8 @@ if (!product) {
   }
 
   function buildRelated() {
-    const related = products.filter(p => p.category === product.category && p.id !== product.id);
+    // Show all other products for maximum variety in horizontal scroll
+    const related = products.filter(p => p.id !== product.id);
     if (!related.length) return '';
     const cards = related.map(p => `
       <div style="flex:0 0 160px;min-width:160px;scroll-snap-align:start;background:white;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden;">
