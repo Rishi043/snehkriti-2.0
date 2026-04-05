@@ -88,6 +88,10 @@ export function initCheckout() {
 
     // Save order — WhatsApp messages are sent automatically on order-confirmed page
     localStorage.setItem('snehkriti_last_order', JSON.stringify(order));
+    // Persist to orders history
+    const history = JSON.parse(localStorage.getItem('snehkriti_orders') || '[]');
+    history.unshift(order);
+    localStorage.setItem('snehkriti_orders', JSON.stringify(history));
     clearCart();
     window.location.href = 'order-confirmed.html';
   });

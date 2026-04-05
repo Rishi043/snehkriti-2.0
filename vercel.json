@@ -4,6 +4,7 @@
     { "source": "/product-detail", "destination": "/product-detail.html" },
     { "source": "/cart", "destination": "/cart.html" },
     { "source": "/checkout", "destination": "/checkout.html" },
-    { "source": "/order-confirmed", "destination": "/order-confirmed.html" }
+    { "source": "/order-confirmed", "destination": "/order-confirmed.html" },
+    { "source": "/my-orders", "destination": "/my-orders.html" }
   ]
 }
