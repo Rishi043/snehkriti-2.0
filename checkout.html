@@ -5,8 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | SNEHKRITI</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
+  <style>
+    .checkout-label { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7060; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+    .checkout-input { font-family: 'Playfair Display', serif; font-size: 1rem; color: #3d2b1f; background: #fff; border: 1.5px solid #e2d0c0; border-radius: 10px; padding: 0.7rem 1rem; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
+    .checkout-input:focus { border-color: #d4a373; box-shadow: 0 0 0 3px rgba(212,163,115,0.15); }
+    .checkout-input::placeholder { color: #c4b0a0; font-style: italic; font-size: 0.9rem; }
+    .checkout-field { margin-bottom: 1.1rem; }
+  </style>
 </head>
 <body class="bg-[#f8f1f0] text-[#5e503f] font-['Playfair_Display']">
 
@@ -41,58 +48,58 @@
 
       <div class="grid md:grid-cols-3 gap-8">
         <div class="md:col-span-2">
-          <form id="checkout-form" class="space-y-4" novalidate>
+          <form id="checkout-form" class="bg-white rounded-2xl p-6 shadow-sm" style="border:1px solid rgba(212,163,115,0.2);" novalidate>
 
-            <div class="form-field">
-              <label for="name"><i>👤</i> Full Name *</label>
-              <input id="name" type="text" class="form-input" placeholder="Your beautiful name">
+            <div class="checkout-field">
+              <label class="checkout-label" for="name">Full Name <span style="color:#e91e63">*</span></label>
+              <input id="name" type="text" class="checkout-input" placeholder="e.g. Priya Sharma">
             </div>
 
-            <div class="form-field">
-              <label for="phone"><i>📱</i> Phone Number *</label>
+            <div class="checkout-field">
+              <label class="checkout-label" for="phone">Phone Number <span style="color:#e91e63">*</span></label>
               <div class="flex items-center gap-2">
-                <span class="handwritten text-lg text-[#5e503f] font-bold">+91</span>
-                <input id="phone" type="tel" class="form-input" placeholder="10-digit mobile number">
+                <span style="font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:600;color:#5e503f;background:#f8edeb;padding:0.7rem 0.8rem;border-radius:10px;border:1.5px solid #e2d0c0;">+91</span>
+                <input id="phone" type="tel" class="checkout-input" placeholder="10-digit mobile number">
               </div>
             </div>
 
-            <div class="form-field">
-              <label for="email"><i>📧</i> Email (optional)</label>
-              <input id="email" type="email" class="form-input" placeholder="For digital receipts (optional)">
+            <div class="checkout-field">
+              <label class="checkout-label" for="email">Email Address <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+              <input id="email" type="email" class="checkout-input" placeholder="yourname@email.com">
             </div>
 
-            <div class="form-field">
-              <label for="address1"><i>🏠</i> Address Line 1 *</label>
-              <input id="address1" type="text" class="form-input" placeholder="House / Flat / Street">
+            <div class="checkout-field">
+              <label class="checkout-label" for="address1">Address Line 1 <span style="color:#e91e63">*</span></label>
+              <input id="address1" type="text" class="checkout-input" placeholder="House No. / Flat / Building / Street">
             </div>
 
-            <div class="form-field">
-              <label for="address2"><i>📍</i> Address Line 2</label>
-              <input id="address2" type="text" class="form-input" placeholder="Area / Locality (optional)">
+            <div class="checkout-field">
+              <label class="checkout-label" for="address2">Address Line 2 <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+              <input id="address2" type="text" class="checkout-input" placeholder="Area / Locality / Landmark">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="form-field">
-                <label for="city"><i>🏙️</i> City *</label>
-                <input id="city" type="text" class="form-input" placeholder="Your city">
+              <div class="checkout-field">
+                <label class="checkout-label" for="city">City <span style="color:#e91e63">*</span></label>
+                <input id="city" type="text" class="checkout-input" placeholder="e.g. Bhopal">
               </div>
-              <div class="form-field">
-                <label for="state"><i>🗺️</i> State *</label>
-                <input id="state" type="text" class="form-input" placeholder="Your state">
+              <div class="checkout-field">
+                <label class="checkout-label" for="state">State <span style="color:#e91e63">*</span></label>
+                <input id="state" type="text" class="checkout-input" placeholder="e.g. Madhya Pradesh">
               </div>
             </div>
 
-            <div class="form-field">
-              <label for="pincode"><i>📮</i> Pincode *</label>
-              <input id="pincode" type="number" class="form-input" placeholder="6-digit pincode">
+            <div class="checkout-field">
+              <label class="checkout-label" for="pincode">Pincode <span style="color:#e91e63">*</span></label>
+              <input id="pincode" type="number" class="checkout-input" placeholder="6-digit pincode">
             </div>
 
-            <div class="form-field">
-              <label for="notes"><i>💬</i> Order Notes</label>
-              <textarea id="notes" class="form-input" rows="3" placeholder="Any special requests? Custom sizes, gift wrapping, colour preferences..."></textarea>
+            <div class="checkout-field">
+              <label class="checkout-label" for="notes">Order Notes <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+              <textarea id="notes" class="checkout-input" rows="3" placeholder="Any special requests — gift wrapping, colour preferences, custom message..."></textarea>
             </div>
 
-            <button type="submit" class="submit-btn handwritten text-2xl px-8 py-4 rounded-full w-full">Place Order 💛</button>
+            <button type="submit" class="submit-btn w-full mt-2" style="font-family:'Playfair Display',serif;font-size:1.2rem;letter-spacing:0.03em;">Place Order 💛</button>
           </form>
         </div>
 
@@ -104,9 +111,12 @@
     </div>
   </section>
 
-  <a href="cart.html" class="fixed bottom-6 right-6 z-50 bg-[#d4a373] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl hover:bg-[#b08968] transition-all hover:scale-110">
-    🛍️
-    <span id="cart-count-badge-float" class="absolute -top-1 -right-1 bg-[#e91e63] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+  <a href="cart.html" class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-0.5 group" style="text-decoration:none;">
+    <div style="background:linear-gradient(135deg,#d4a373,#b08968);color:white;width:56px;height:56px;border-radius:50%;box-shadow:0 8px 24px rgba(212,163,115,0.5);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:transform 0.3s;position:relative;" class="group-hover:scale-110">
+      🛍️
+      <span id="cart-count-badge-float" style="position:absolute;top:-4px;right:-4px;background:#e91e63;color:white;font-size:0.65rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;">0</span>
+    </div>
+    <span style="font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b08968;background:white;padding:1px 6px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">Cart</span>
   </a>
 
   <footer class="py-8 px-4 text-center watercolor-bg mt-12">

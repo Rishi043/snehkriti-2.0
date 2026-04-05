@@ -1012,9 +1012,12 @@
     </footer>
 
     <!-- Floating Cart Button -->
-    <a href="cart.html" class="fixed bottom-6 right-6 z-50 bg-[#d4a373] text-white w-14 h-14 rounded-full shadow-2xl flex items-center justify-center text-2xl hover:bg-[#b08968] transition-all hover:scale-110">
-      🛍️
-      <span id="cart-count-badge-float" class="absolute -top-1 -right-1 bg-[#e91e63] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">0</span>
+    <a href="cart.html" class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-0.5 group" style="text-decoration:none;">
+      <div style="background:linear-gradient(135deg,#d4a373,#b08968);color:white;width:56px;height:56px;border-radius:50%;box-shadow:0 8px 24px rgba(212,163,115,0.5);display:flex;align-items:center;justify-content:center;font-size:1.5rem;transition:transform 0.3s;position:relative;" class="group-hover:scale-110">
+        🛍️
+        <span id="cart-count-badge-float" style="position:absolute;top:-4px;right:-4px;background:#e91e63;color:white;font-size:0.65rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:'Inter',sans-serif;font-weight:700;">0</span>
+      </div>
+      <span style="font-family:'Inter',sans-serif;font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b08968;background:white;padding:1px 6px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">Cart</span>
     </a>
 
     <script type="module" src="/src/indexPage.js"></script>
