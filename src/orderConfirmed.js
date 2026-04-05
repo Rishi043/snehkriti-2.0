@@ -9,11 +9,11 @@ const root = document.getElementById('confirmed-root');
 if (!order) {
   window.location.href = 'index.html';
 } else {
-  // Auto-send both WhatsApp messages immediately
-  setTimeout(() => {
-    sendOwnerWhatsApp(order);
-    setTimeout(() => sendCustomerWhatsApp(order), 1500);
-  }, 800);
+  // Open owner WhatsApp immediately (must be on page load, not in setTimeout to avoid popup block)
+  sendOwnerWhatsApp(order);
+
+  // Customer WA opened after a short delay with a visible prompt
+  setTimeout(() => sendCustomerWhatsApp(order), 1200);
 
   const itemsHtml = order.items.map(i => `
     <div class="flex justify-between items-center py-2 border-b border-[#d4a373] border-opacity-20">
