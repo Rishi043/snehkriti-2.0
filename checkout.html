@@ -5,14 +5,56 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | SNEHKRITI</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/style.css">
   <style>
-    .checkout-label { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #8a7060; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
-    .checkout-input { font-family: 'Playfair Display', serif; font-size: 1rem; color: #3d2b1f; background: #fff; border: 1.5px solid #e2d0c0; border-radius: 10px; padding: 0.7rem 1rem; width: 100%; transition: border-color 0.2s, box-shadow 0.2s; outline: none; }
-    .checkout-input:focus { border-color: #d4a373; box-shadow: 0 0 0 3px rgba(212,163,115,0.15); }
-    .checkout-input::placeholder { color: #c4b0a0; font-style: italic; font-size: 0.9rem; }
-    .checkout-field { margin-bottom: 1.1rem; }
+    .co-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #7a6555;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .co-input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #2d1f14;
+      background: #fff;
+      border: 1.5px solid #ddd0c4;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .co-input:focus {
+      border-color: #d4a373;
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.12);
+    }
+    .co-input::placeholder { color: #bba898; font-size: 0.88rem; }
+    .co-input:disabled { background: #f8f4f0; color: #888; cursor: not-allowed; }
+    .co-field { margin-bottom: 1rem; }
+    .co-prefix {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5e503f;
+      background: #f8edeb;
+      padding: 0.65rem 0.8rem;
+      border-radius: 10px;
+      border: 1.5px solid #ddd0c4;
+      white-space: nowrap;
+    }
+    .pin-status {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      min-height: 16px;
+    }
   </style>
 </head>
 <body class="bg-[#f8f1f0] text-[#5e503f] font-['Playfair_Display']">
@@ -41,72 +83,69 @@
     </ul>
   </nav>
 
-  <section class="py-12 px-4">
-    <div class="container mx-auto max-w-5xl">
-      <h2 class="text-4xl handwritten font-bold text-center mb-2 gradient-text">Almost There! 🌸</h2>
-      <p class="handwritten text-xl text-[#6c757d] italic text-center mb-10">Just a few details and your piece is on its way ✨</p>
+  <section class="py-10 px-4">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-4xl handwritten font-bold text-center mb-1 gradient-text">Almost There! 🌸</h2>
+      <p class="handwritten text-lg text-[#6c757d] italic text-center mb-8">Just a few details and your piece is on its way ✨</p>
 
-      <div class="grid md:grid-cols-3 gap-8">
-        <div class="md:col-span-2">
-          <form id="checkout-form" class="bg-white rounded-2xl p-6 shadow-sm" style="border:1px solid rgba(212,163,115,0.2);" novalidate>
+      <div class="flex flex-col gap-6">
 
-            <div class="checkout-field">
-              <label class="checkout-label" for="name">Full Name <span style="color:#e91e63">*</span></label>
-              <input id="name" type="text" class="checkout-input" placeholder="e.g. Priya Sharma">
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="phone">Phone Number <span style="color:#e91e63">*</span></label>
-              <div class="flex items-center gap-2">
-                <span style="font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:600;color:#5e503f;background:#f8edeb;padding:0.7rem 0.8rem;border-radius:10px;border:1.5px solid #e2d0c0;">+91</span>
-                <input id="phone" type="tel" class="checkout-input" placeholder="10-digit mobile number">
-              </div>
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="email">Email Address <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
-              <input id="email" type="email" class="checkout-input" placeholder="yourname@email.com">
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="address1">Address Line 1 <span style="color:#e91e63">*</span></label>
-              <input id="address1" type="text" class="checkout-input" placeholder="House No. / Flat / Building / Street">
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="address2">Address Line 2 <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
-              <input id="address2" type="text" class="checkout-input" placeholder="Area / Locality / Landmark">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="checkout-field">
-                <label class="checkout-label" for="city">City <span style="color:#e91e63">*</span></label>
-                <input id="city" type="text" class="checkout-input" placeholder="e.g. Bhopal">
-              </div>
-              <div class="checkout-field">
-                <label class="checkout-label" for="state">State <span style="color:#e91e63">*</span></label>
-                <input id="state" type="text" class="checkout-input" placeholder="e.g. Madhya Pradesh">
-              </div>
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="pincode">Pincode <span style="color:#e91e63">*</span></label>
-              <input id="pincode" type="number" class="checkout-input" placeholder="6-digit pincode">
-            </div>
-
-            <div class="checkout-field">
-              <label class="checkout-label" for="notes">Order Notes <span style="color:#a0a0a0;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
-              <textarea id="notes" class="checkout-input" rows="3" placeholder="Any special requests — gift wrapping, colour preferences, custom message..."></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn w-full mt-2" style="font-family:'Playfair Display',serif;font-size:1.2rem;letter-spacing:0.03em;">Place Order 💛</button>
-          </form>
-        </div>
-
-        <div class="summary-card artistic-border self-start sticky top-24">
+        <!-- ORDER SUMMARY FIRST -->
+        <div class="summary-card" style="border:1px solid rgba(212,163,115,0.2);">
           <h3 class="handwritten text-2xl font-bold text-[#d4a373] mb-4">Order Summary</h3>
           <div id="order-summary"></div>
         </div>
+
+        <!-- FORM BELOW -->
+        <form id="checkout-form" class="bg-white rounded-2xl p-6 shadow-sm" style="border:1px solid rgba(212,163,115,0.2);" novalidate>
+
+          <div class="co-field">
+            <label class="co-label" for="name">Full Name <span style="color:#e91e63">*</span></label>
+            <input id="name" type="text" class="co-input" placeholder="e.g. Priya Sharma">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="phone">Phone Number <span style="color:#e91e63">*</span></label>
+            <div class="flex items-center gap-2">
+              <span class="co-prefix">+91</span>
+              <input id="phone" type="tel" class="co-input" placeholder="10-digit mobile number">
+            </div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="email">Email <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <input id="email" type="email" class="co-input" placeholder="yourname@email.com">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="pincode">Pincode <span style="color:#e91e63">*</span></label>
+            <input id="pincode" type="tel" maxlength="6" class="co-input" placeholder="6-digit pincode" oninput="lookupPincode(this.value)">
+            <p id="pin-status" class="pin-status text-[#d4a373]"></p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="co-field">
+              <label class="co-label" for="city">City <span style="color:#e91e63">*</span></label>
+              <input id="city" type="text" class="co-input" placeholder="Auto-filled" readonly>
+            </div>
+            <div class="co-field">
+              <label class="co-label" for="state">State <span style="color:#e91e63">*</span></label>
+              <input id="state" type="text" class="co-input" placeholder="Auto-filled" readonly>
+            </div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="address1">Full Address <span style="color:#e91e63">*</span></label>
+            <input id="address1" type="text" class="co-input" placeholder="House No. / Flat / Street / Area / Landmark">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="notes">Order Notes <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <textarea id="notes" class="co-input" rows="2" placeholder="Gift wrapping, colour preferences, custom message..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn handwritten w-full mt-2" style="font-size:1.2rem;">Place Order 💛</button>
+        </form>
       </div>
     </div>
   </section>
@@ -123,6 +162,40 @@
     <p class="handwritten text-lg text-[#6c757d] mt-1">© 2025 SNEHKRITI · <a href="https://www.instagram.com/snehkriti.in/" target="_blank" class="hover:text-[#d4a373]">@snehkriti.in</a></p>
   </footer>
 
+  <script>
+    window.lookupPincode = async function(pin) {
+      const status = document.getElementById('pin-status');
+      const city = document.getElementById('city');
+      const state = document.getElementById('state');
+      if (pin.length !== 6) {
+        city.value = ''; state.value = '';
+        status.textContent = '';
+        return;
+      }
+      status.textContent = 'Looking up...';
+      status.style.color = '#d4a373';
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const data = await res.json();
+        if (data[0].Status === 'Success') {
+          const po = data[0].PostOffice[0];
+          city.value = po.District;
+          state.value = po.State;
+          status.textContent = '✓ ' + po.Name + ', ' + po.District;
+          status.style.color = '#22c55e';
+        } else {
+          city.value = ''; state.value = '';
+          status.textContent = 'Invalid pincode';
+          status.style.color = '#e91e63';
+        }
+      } catch {
+        status.textContent = 'Could not fetch — enter manually';
+        status.style.color = '#e91e63';
+        city.removeAttribute('readonly');
+        state.removeAttribute('readonly');
+      }
+    };
+  </script>
   <script type="module" src="src/checkoutPage.js"></script>
 </body>
 </html>

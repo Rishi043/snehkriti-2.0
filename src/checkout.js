@@ -77,7 +77,6 @@ export function initCheckout() {
         phone: getField('phone').value.replace(/\s/g, ''),
         email: getField('email').value.trim(),
         address1: getField('address1').value.trim(),
-        address2: getField('address2').value.trim(),
         city: getField('city').value.trim(),
         state: getField('state').value.trim(),
         pincode: getField('pincode').value.trim(),
