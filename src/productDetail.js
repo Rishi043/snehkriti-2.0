@@ -91,11 +91,10 @@ if (!product) {
           <span id="size-surcharge-note" style="${DM}font-size:0.8rem;color:#d4a373;margin-left:8px;display:none;">(XL +₹${LARGE_SIZE_SURCHARGE})</span>
         </div>
 
-        <p style="${DM}font-size:0.88rem;color:#5e503f;line-height:1.65;margin-bottom:14px;">${product.description}</p>
-
         ${product.note ? `<p style="${DM}font-size:0.78rem;color:#e91e63;background:#feeafa;padding:4px 12px;border-radius:20px;display:inline-block;margin-bottom:12px;">⚠️ ${product.note}</p>` : ''}
 
         <div style="margin-bottom:14px;">
+        <p style="${DM}font-size:0.78rem;font-weight:600;color:#7a6555;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Size</p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;">${sizeOptions}</div>
           <p id="size-error" style="${DM}font-size:0.78rem;color:#e91e63;margin-top:6px;display:none;">Please select a size</p>
         </div>
