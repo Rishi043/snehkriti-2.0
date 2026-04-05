@@ -5,6 +5,9 @@ import { OWNER_PHONE } from './whatsapp.js';
 
 updateAllBadges();
 
+const LARGE_SIZES = ['XL', 'XXL'];
+const LARGE_SIZE_SURCHARGE = 100;
+
 const params = new URLSearchParams(window.location.search);
 const id = parseInt(params.get('id'));
 const product = products.find(p => p.id === id);
@@ -24,20 +27,47 @@ if (!product) {
   let selectedSize = '';
   let qty = 1;
 
+  function getEffectivePrice(size) {
+    return product.price + (LARGE_SIZES.includes(size) ? LARGE_SIZE_SURCHARGE : 0);
+  }
+
   function buildImageGallery() {
     const hasMultiple = product.images.length > 1;
-    const thumbs = hasMultiple ? `
+
+    let mainImageHtml;
+    if (hasMultiple) {
+      const imgs = product.images.map((src, i) =>
+        `<img src="${src}" alt="${product.name}" class="w-full h-80 md:h-96 object-cover carousel-img${i === 0 ? ' active' : ''}" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:${i===0?1:0};transition:opacity 0.5s ease;">`
+      ).join('');
+      const dots = product.images.map((_, i) =>
+        `<span class="pd-dot${i === 0 ? ' active' : ''}" onclick="pdSlide(${i})" style="width:10px;height:10px;border-radius:50%;background:${i===0?'#d4a373':'rgba(255,255,255,0.6)'};cursor:pointer;transition:all 0.3s;display:inline-block;"></span>`
+      ).join('');
+      mainImageHtml = `
+        <div style="position:relative;width:100%;padding-top:100%;overflow:hidden;border-radius:12px;">
+          <div style="position:absolute;inset:0;">${imgs}</div>
+          <button onclick="pdSlide(-1,'prev')" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(212,163,115,0.85);color:white;border:none;border-radius:6px;font-size:1.8rem;padding:4px 12px;cursor:pointer;z-index:10;">‹</button>
+          <button onclick="pdSlide(-1,'next')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(212,163,115,0.85);color:white;border:none;border-radius:6px;font-size:1.8rem;padding:4px 12px;cursor:pointer;z-index:10;">›</button>
+          <div style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;">${dots}</div>
+        </div>`;
+    } else {
+      mainImageHtml = `
+        <div style="position:relative;width:100%;padding-top:100%;overflow:hidden;border-radius:12px;">
+          <img id="main-img" src="${product.images[0]}" alt="${product.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        </div>`;
+    }
+
+    const thumbs = hasMultiple ? '' : (product.images.length > 1 ? `
       <div class="thumb-strip mt-3">
         ${product.images.map((src, i) => `
           <img src="${src}" alt="${product.name}" class="${i === 0 ? 'active-thumb' : ''}" onclick="swapMain(${i})">
         `).join('')}
-      </div>` : '';
+      </div>` : '');
 
     return `
       <div>
         <div class="relative">
-          <div class="polaroid-frame bg-white rounded-xl shadow-lg overflow-hidden">
-            <img id="main-img" src="${product.images[0]}" alt="${product.name}" class="w-full h-80 md:h-96 object-cover">
+          <div class="polaroid-frame bg-white rounded-xl shadow-lg overflow-hidden" style="padding:0;">
+            ${mainImageHtml}
           </div>
           <div class="washi-tape absolute top-0 left-1/2 transform -translate-x-1/2 w-20 h-5 bg-gray-300 rotate-6 -mt-2 z-20"></div>
         </div>
@@ -52,49 +82,68 @@ if (!product) {
 
   function buildSizeSelector() {
     return `
-      <div class="size-options">
-        ${product.sizes.map(s => `
-          <div class="size-option">
+      <div class="size-options" style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.75rem;">
+        ${product.sizes.map(s => {
+          const isLarge = LARGE_SIZES.includes(s);
+          return `
+          <div class="size-option" style="position:relative;">
             <input type="radio" name="size" id="size-${s}" value="${s}">
-            <label for="size-${s}" class="handwritten text-lg">${s}</label>
-          </div>
-        `).join('')}
+            <label for="size-${s}" class="handwritten" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0.6rem 1rem;background:rgba(255,255,255,0.8);border-radius:12px;border:2px solid #e8d5c0;cursor:pointer;font-size:1.1rem;font-weight:700;color:#5e503f;min-width:52px;transition:all 0.25s;gap:2px;">
+              ${s}
+              ${isLarge ? `<span style="font-size:0.65rem;color:#d4a373;font-weight:600;">+₹${LARGE_SIZE_SURCHARGE}</span>` : ''}
+            </label>
+          </div>`;
+        }).join('')}
       </div>`;
   }
 
   function buildProductInfo() {
-    const waText = encodeURIComponent(`Hi! I'm interested in ${product.name} (₹${product.price}). Can you help me?`);
+    const basePrice = product.price;
+    const waText = encodeURIComponent(`Hi! I'm interested in ${product.name} (₹${basePrice}). Can you help me?`);
     return `
       <div class="relative">
-        <div class="absolute -top-3 -right-3 bg-[#f8edeb] px-3 py-1 rounded-full handwritten text-sm rotate-6 z-10">${product.badge}</div>
-        <h2 class="text-4xl handwritten font-bold text-[#d4a373] mb-3">${product.name}</h2>
-        <div class="price-tag bg-[#feeafa] text-[#d4a373] px-5 py-2 rounded-full text-2xl font-bold shadow-md inline-block mb-4">₹${product.price}</div>
-        <p class="mb-4 text-lg">${product.description}</p>
-        <blockquote class="artistic-border bg-[#f8edeb] p-4 rounded-lg mb-4 italic text-[#5e503f]">${product.longDescription}</blockquote>
-        ${product.note ? `<p class="handwritten text-base bg-[#feeafa] text-[#e91e63] px-4 py-2 rounded-full inline-block mb-4">⚠️ ${product.note}</p>` : ''}
+        <div class="absolute -top-3 -right-3 bg-[#f8edeb] px-3 py-1 rounded-full handwritten text-sm rotate-6 z-10 shadow-sm border border-[#d4a373] border-opacity-30">${product.badge}</div>
 
-        <div class="mb-4">
-          <p class="handwritten text-lg font-bold text-[#5e503f] mb-2">Select Size:</p>
-          ${buildSizeSelector()}
-          <p id="size-error" class="handwritten text-sm mt-1 hidden" style="color:#e91e63">Please select a size! 🌸</p>
+        <h2 class="text-4xl handwritten font-bold text-[#d4a373] mb-2">${product.name}</h2>
+
+        <div class="flex items-center gap-3 mb-4 flex-wrap">
+          <div id="price-display" class="price-tag bg-[#feeafa] text-[#d4a373] px-5 py-2 rounded-full text-2xl font-bold shadow-md inline-block handwritten">₹${basePrice}</div>
+          <span id="size-surcharge-note" class="handwritten text-sm text-[#d4a373] italic hidden">✨ +₹${LARGE_SIZE_SURCHARGE} for XL/XXL</span>
         </div>
 
-        <div class="flex items-center gap-4 mb-6">
-          <p class="handwritten text-lg font-bold text-[#5e503f]">Qty:</p>
+        <p class="mb-3 text-lg leading-relaxed">${product.description}</p>
+
+        <blockquote class="artistic-border bg-[#f8edeb] p-4 rounded-xl mb-4 italic text-[#5e503f] relative" style="border-left:4px solid #d4a373;border-top:none;border-right:none;border-bottom:none;">
+          <span class="absolute -top-3 -left-1 text-4xl text-[#d4a373] opacity-20 font-serif leading-none">"</span>
+          ${product.longDescription}
+        </blockquote>
+
+        ${product.note ? `<p class="handwritten text-base bg-[#feeafa] text-[#e91e63] px-4 py-2 rounded-full inline-block mb-4 shadow-sm">⚠️ ${product.note}</p>` : ''}
+
+        <div class="mb-5 bg-[#fdf8f5] rounded-2xl p-4 border border-[#e8d5c0]">
+          <p class="handwritten text-lg font-bold text-[#5e503f] mb-1">✂️ Select Size:</p>
+          <p class="handwritten text-sm text-[#6c757d] italic mb-2">XL & XXL are +₹${LARGE_SIZE_SURCHARGE} extra 🌸</p>
+          ${buildSizeSelector()}
+          <p id="size-error" class="handwritten text-sm mt-2 hidden" style="color:#e91e63">Please select a size! 🌸</p>
+        </div>
+
+        <div class="flex items-center gap-4 mb-5 bg-[#fdf8f5] rounded-2xl p-4 border border-[#e8d5c0]">
+          <p class="handwritten text-lg font-bold text-[#5e503f]">🧮 Qty:</p>
           <div class="flex items-center gap-3">
             <button class="qty-btn" onclick="changeQty(-1)">−</button>
             <span id="qty-display" class="handwritten text-xl font-bold text-[#d4a373] w-8 text-center">1</span>
             <button class="qty-btn" onclick="changeQty(1)">+</button>
           </div>
+          <span id="line-total" class="handwritten text-lg text-[#5e503f] ml-2 opacity-70"></span>
         </div>
 
-        <div class="flex flex-wrap gap-3 mb-6">
+        <div class="flex flex-wrap gap-3 mb-5">
           <button id="add-cart-btn" onclick="handleAddToCart()" class="submit-btn handwritten text-xl px-6 py-3 rounded-full">Add to Cart 🛍️</button>
           <button onclick="handleBuyNow()" class="submit-btn-outline handwritten text-xl px-6 py-3 rounded-full">Buy Now ✨</button>
         </div>
 
         <a href="https://wa.me/${OWNER_PHONE}?text=${waText}"
-          target="_blank" class="whatsapp-btn inline-flex mb-6">
+          target="_blank" class="whatsapp-btn inline-flex mb-5">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           Ask about this product
         </a>
@@ -113,15 +162,17 @@ if (!product) {
     const related = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 3);
     if (!related.length) return '';
     const cards = related.map(p => `
-      <div class="hover-notes bg-white p-4 rounded-lg shadow-md relative">
+      <div class="hover-notes bg-white p-4 rounded-xl shadow-md relative">
         <a href="product-detail.html?id=${p.id}">
-          <div class="polaroid-frame bg-white rounded-md shadow-lg overflow-hidden mb-3">
-            <img src="${p.images[0]}" alt="${p.name}" class="w-full h-48 object-cover">
+          <div class="polaroid-frame bg-white rounded-md shadow-lg overflow-hidden mb-3" style="padding:0;">
+            <div style="position:relative;width:100%;padding-top:100%;overflow:hidden;border-radius:8px;">
+              <img src="${p.images[0]}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+            </div>
           </div>
           <h4 class="handwritten text-lg text-[#d4a373] hover:underline">${p.name}</h4>
         </a>
         <div class="flex justify-between items-center mt-2">
-          <span class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold">₹${p.price}</span>
+          <span class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold handwritten">₹${p.price}</span>
           <a href="product-detail.html?id=${p.id}" class="handwritten text-sm text-[#d4a373] hover:underline">View →</a>
         </div>
       </div>`).join('');
@@ -136,7 +187,7 @@ if (!product) {
     <div class="mb-4">
       <a href="products.html" class="handwritten text-[#d4a373] hover:underline text-lg">← Back to Collections</a>
     </div>
-    <div class="grid md:grid-cols-2 gap-10 bg-white p-6 md:p-10 rounded-2xl shadow-lg artistic-border">
+    <div class="grid md:grid-cols-2 gap-10 bg-white p-6 md:p-10 rounded-2xl shadow-lg" style="border:1px solid rgba(212,163,115,0.2);">
       ${buildImageGallery()}
       ${buildProductInfo()}
     </div>
@@ -147,10 +198,56 @@ if (!product) {
     </div>
     ${buildRelated()}`;
 
+  // carousel state for multi-image products
+  let pdCurrentIdx = 0;
+  window.pdSlide = function(arg, dir) {
+    const imgs = content.querySelectorAll('.carousel-img');
+    const dots = content.querySelectorAll('.pd-dot');
+    if (!imgs.length) return;
+    imgs[pdCurrentIdx].style.opacity = '0';
+    if (dots[pdCurrentIdx]) dots[pdCurrentIdx].style.background = 'rgba(255,255,255,0.6)';
+    if (dir === 'next') pdCurrentIdx = (pdCurrentIdx + 1) % imgs.length;
+    else if (dir === 'prev') pdCurrentIdx = (pdCurrentIdx - 1 + imgs.length) % imgs.length;
+    else pdCurrentIdx = arg; // direct index
+    imgs[pdCurrentIdx].style.opacity = '1';
+    if (dots[pdCurrentIdx]) dots[pdCurrentIdx].style.background = '#d4a373';
+  };
+
+  function updatePriceDisplay() {
+    const price = getEffectivePrice(selectedSize);
+    const priceEl = document.getElementById('price-display');
+    const noteEl = document.getElementById('size-surcharge-note');
+    const lineTotalEl = document.getElementById('line-total');
+    if (priceEl) priceEl.textContent = `₹${price}`;
+    if (noteEl) {
+      if (LARGE_SIZES.includes(selectedSize)) noteEl.classList.remove('hidden');
+      else noteEl.classList.add('hidden');
+    }
+    if (lineTotalEl && qty > 1) lineTotalEl.textContent = `= ₹${price * qty}`;
+    else if (lineTotalEl) lineTotalEl.textContent = '';
+  }
+
   document.querySelectorAll('input[name="size"]').forEach(radio => {
     radio.addEventListener('change', () => {
       selectedSize = radio.value;
       document.getElementById('size-error').classList.add('hidden');
+      // style selected label
+      document.querySelectorAll('.size-option label').forEach(l => {
+        l.style.background = 'rgba(255,255,255,0.8)';
+        l.style.borderColor = '#e8d5c0';
+        l.style.color = '#5e503f';
+        l.style.transform = '';
+        l.style.boxShadow = '';
+      });
+      const selected = document.querySelector(`label[for="size-${selectedSize}"]`);
+      if (selected) {
+        selected.style.background = 'linear-gradient(135deg,#d4a373,#b08968)';
+        selected.style.borderColor = '#d4a373';
+        selected.style.color = 'white';
+        selected.style.transform = 'scale(1.08)';
+        selected.style.boxShadow = '0 5px 20px rgba(212,163,115,0.4)';
+      }
+      updatePriceDisplay();
     });
   });
 
@@ -164,6 +261,7 @@ if (!product) {
   window.changeQty = function(delta) {
     qty = Math.max(1, qty + delta);
     document.getElementById('qty-display').textContent = qty;
+    updatePriceDisplay();
   };
 
   window.handleAddToCart = function() {
@@ -171,7 +269,8 @@ if (!product) {
       document.getElementById('size-error').classList.remove('hidden');
       return;
     }
-    addToCart(product, selectedSize, qty);
+    const effectivePrice = getEffectivePrice(selectedSize);
+    addToCart({ ...product, price: effectivePrice }, selectedSize, qty);
     showToast('Added to cart! 🛍️');
     const btn = document.getElementById('add-cart-btn');
     btn.textContent = 'Added! ✓';
@@ -183,7 +282,8 @@ if (!product) {
       document.getElementById('size-error').classList.remove('hidden');
       return;
     }
-    addToCart(product, selectedSize, qty);
+    const effectivePrice = getEffectivePrice(selectedSize);
+    addToCart({ ...product, price: effectivePrice }, selectedSize, qty);
     window.location.href = 'checkout.html';
   };
 
