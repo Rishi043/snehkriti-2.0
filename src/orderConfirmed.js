@@ -63,7 +63,7 @@ if (!order) {
       <div class="watercolor-bg artistic-border rounded-2xl p-6 text-center">
         <h3 class="handwritten text-2xl font-bold text-[#d4a373] mb-4">Complete Your Payment 💳</h3>
         <div class="bg-white rounded-xl p-4 inline-block shadow-lg mb-4">
-          <img src="images/payment-qr.png" alt="Payment QR Code"
+          <img src="/images/payment-qr.png" alt="Payment QR Code"
             class="w-48 h-48 object-contain mx-auto"
             onerror="this.parentElement.innerHTML='<div class=\\'w-48 h-48 flex items-center justify-center bg-[#f8edeb] rounded-xl mx-auto\\'><p class=\\'handwritten text-[#d4a373] text-center text-sm\\'>QR Code<br>Coming Soon 🌸</p></div>'">
         </div>

@@ -24,19 +24,23 @@ function render() {
   const total = subtotal + delivery;
 
   const itemsHtml = cart.map(item => `
-    <div class="cart-item hover-notes bg-white p-4 rounded-xl shadow-sm mb-3">
-      <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg border-2 border-[#d4a373] border-opacity-30 flex-shrink-0">
-      <div class="flex-1 min-w-0">
-        <a href="product-detail.html?id=${item.id}" class="handwritten text-xl text-[#d4a373] hover:underline block truncate">${item.name}</a>
+    <div class="cart-item hover-notes bg-white rounded-xl shadow-sm mb-3">
+      <img src="${item.image}" alt="${item.name}" class="rounded-lg border-2 border-[#d4a373] border-opacity-30">
+      <div class="min-w-0">
+        <a href="product-detail.html?id=${item.id}" class="handwritten text-lg text-[#d4a373] hover:underline block" style="word-break:break-word;">${item.name}</a>
         ${item.size ? `<span class="bg-[#feeafa] text-[#d4a373] px-2 py-0.5 rounded-full text-xs handwritten">${item.size}</span>` : ''}
       </div>
-      <div class="flex items-center gap-2 flex-shrink-0">
-        <button class="qty-btn" onclick="handleQty(${item.id},'${item.size}',${item.qty - 1})">−</button>
-        <span class="handwritten text-lg font-bold text-[#d4a373] w-6 text-center">${item.qty}</span>
-        <button class="qty-btn" onclick="handleQty(${item.id},'${item.size}',${item.qty + 1})">+</button>
+      <div class="cart-item-actions" style="grid-column:2;">
+        <div class="flex items-center gap-2">
+          <button class="qty-btn" onclick="handleQty(${item.id},'${item.size}',${item.qty - 1})">−</button>
+          <span class="handwritten text-lg font-bold text-[#d4a373] w-6 text-center">${item.qty}</span>
+          <button class="qty-btn" onclick="handleQty(${item.id},'${item.size}',${item.qty + 1})">+</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold handwritten">₹${item.price * item.qty}</span>
+          <button onclick="handleRemove(${item.id},'${item.size}')" class="text-[#e91e63] hover:scale-110 transition text-lg" title="Remove">❌</button>
+        </div>
       </div>
-      <div class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold handwritten text-lg flex-shrink-0">₹${item.price * item.qty}</div>
-      <button onclick="handleRemove(${item.id},'${item.size}')" class="text-[#e91e63] hover:scale-110 transition text-xl flex-shrink-0" title="Remove">❌</button>
     </div>`).join('');
 
   root.innerHTML = `
