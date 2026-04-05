@@ -24,10 +24,11 @@ function render() {
   const total = subtotal + delivery;
 
   const itemsHtml = cart.map(item => `
-    <div class="cart-item hover-notes bg-white rounded-xl shadow-sm mb-3">
+    <div class="cart-item hover-notes bg-white rounded-xl shadow-sm mb-3" style="position:relative;">
+      <button onclick="handleRemove(${item.id},'${item.size}')" title="Remove" style="position:absolute;top:6px;right:8px;width:18px;height:18px;border-radius:50%;background:#e8d5c0;border:none;cursor:pointer;font-size:9px;color:#5e503f;display:flex;align-items:center;justify-content:center;line-height:1;padding:0;">✕</button>
       <img src="${item.image}" alt="${item.name}" class="rounded-lg border-2 border-[#d4a373] border-opacity-30">
       <div class="min-w-0">
-        <a href="product-detail.html?id=${item.id}" class="handwritten text-lg text-[#d4a373] hover:underline block" style="word-break:break-word;">${item.name}</a>
+        <a href="product-detail.html?id=${item.id}" class="handwritten text-lg text-[#d4a373] hover:underline block" style="word-break:break-word;padding-right:20px;">${item.name}</a>
         ${item.size ? `<span class="bg-[#feeafa] text-[#d4a373] px-2 py-0.5 rounded-full text-xs handwritten">${item.size}</span>` : ''}
       </div>
       <div class="cart-item-actions" style="grid-column:2;">
@@ -36,10 +37,7 @@ function render() {
           <span class="handwritten text-lg font-bold text-[#d4a373] w-6 text-center">${item.qty}</span>
           <button class="qty-btn" onclick="handleQty(${item.id},'${item.size}',${item.qty + 1})">+</button>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold handwritten">₹${item.price * item.qty}</span>
-          <button onclick="handleRemove(${item.id},'${item.size}')" class="text-[#e91e63] hover:scale-110 transition text-lg" title="Remove">❌</button>
-        </div>
+        <span class="price-tag bg-[#feeafa] text-[#d4a373] px-3 py-1 rounded-full font-bold handwritten">₹${item.price * item.qty}</span>
       </div>
     </div>`).join('');
 
@@ -73,11 +71,9 @@ window.handleQty = function(id, size, newQty) {
 };
 
 window.handleRemove = function(id, size) {
-  if (confirm('Remove this piece? 💔')) {
-    removeFromCart(id, size);
-    showToast('Removed from cart 💔', 'error');
-    render();
-  }
+  removeFromCart(id, size);
+  showToast('Removed from cart 💔', 'error');
+  render();
 };
 
 render();
