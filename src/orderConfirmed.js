@@ -9,11 +9,7 @@ const root = document.getElementById('confirmed-root');
 if (!order) {
   window.location.href = 'index.html';
 } else {
-  // Open owner WhatsApp immediately (must be on page load, not in setTimeout to avoid popup block)
-  sendOwnerWhatsApp(order);
-
-  // Customer WA opened after a short delay with a visible prompt
-  setTimeout(() => sendCustomerWhatsApp(order), 1200);
+  // WhatsApp links are shown as buttons — auto-open is blocked by browsers as popups
 
   const DM = "font-family:'DM Sans',sans-serif;";
   const itemsHtml = order.items.map(i => `
@@ -28,6 +24,17 @@ if (!order) {
 
   const addr2 = order.customer.address2 ? `<br>${order.customer.address2}` : '';
   const payText = encodeURIComponent(`Hi! I've paid for Order ${order.orderId}. Attaching payment screenshot.`);
+  const customerPhone = '91' + order.customer.phone;
+
+  // Build WhatsApp messages
+  const itemLinesOwner = order.items.map(i =>
+    `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} | ₹${i.price * i.qty}`
+  ).join('\n');
+  const itemLinesCust = order.items.map(i =>
+    `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} — ₹${i.price * i.qty}`
+  ).join('\n');
+  const ownerMsg = `🛍️ *New Order — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Order ID:* ${order.orderId}\n\n👤 *Customer*\nName: ${order.customer.name}\nPhone: +91 ${order.customer.phone}\nEmail: ${order.customer.email || 'Not provided'}\n\n📍 *Address*\n${order.customer.address1}\n${order.customer.city}, ${order.customer.state} — ${order.customer.pincode}\n\n🧾 *Items*\n${itemLinesOwner}\n\n💰 Subtotal: ₹${order.subtotal} | Delivery: ₹${order.delivery}\n✅ *TOTAL: ₹${order.total}*\n\n📝 Notes: ${order.customer.notes || 'None'}\n━━━━━━━━━━━━━━━━━━━━━\nPlease process this order! 🙏`;
+  const customerMsg = `🎉 *Order Confirmed — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\nHeyy ${order.customer.name}! Your order is placed 💛\n\n📦 *Order ID:* ${order.orderId}\n\n🧾 *What you ordered:*\n${itemLinesCust}\n\n✅ *Total: ₹${order.total}*\n\n💳 Please scan the QR and send payment screenshot here or on Instagram DM @snehkriti.in\n\n🚚 We'll start crafting once payment is confirmed!\n━━━━━━━━━━━━━━━━━━━━━\nWith love, Sneha 🌸`;
 
   root.innerHTML = `
     <div class="text-center mb-10">
@@ -41,7 +48,23 @@ if (!order) {
       <h2 class="text-5xl handwritten font-bold gradient-text mb-3">Order Placed! 🎉</h2>
       <p class="text-lg mb-2" style="font-family:'DM Sans',sans-serif;">Thank you <strong class="text-[#d4a373]">${order.customer.name}</strong>! Your piece of art is being crafted with love.</p>
       <div class="bg-[#feeafa] text-[#d4a373] px-6 py-2 rounded-full text-base font-semibold shadow-md inline-block mb-3" style="font-family:'DM Sans',sans-serif;">Order #${order.orderId}</div>
-      <p class="text-sm text-[#6c757d] italic" style="font-family:'DM Sans',sans-serif;">&#128242; WhatsApp messages have been sent to you and Snehkriti automatically.</p>
+      <p class="text-sm text-[#6c757d] italic" style="font-family:'DM Sans',sans-serif;">&#128242; Tap the WhatsApp buttons below to notify Snehkriti and receive your order confirmation.</p>
+    </div>
+
+    <!-- WhatsApp Action Buttons -->
+    <div class="grid md:grid-cols-2 gap-4 mb-8">
+      <a href="https://wa.me/${OWNER_PHONE}?text=${encodeURIComponent(ownerMsg)}" target="_blank"
+         onclick="this.style.opacity='0.7';"
+         class="whatsapp-btn justify-center text-lg py-4" style="background:#25D366;border-radius:16px;display:flex;align-items:center;gap:10px;text-decoration:none;color:white;font-family:'Caveat',cursive;font-size:1.2rem;padding:16px;">
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        📦 Notify Snehkriti
+      </a>
+      <a href="https://wa.me/${customerPhone}?text=${encodeURIComponent(customerMsg)}" target="_blank"
+         onclick="this.style.opacity='0.7';"
+         style="background:#128C7E;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;color:white;font-family:'Caveat',cursive;font-size:1.2rem;padding:16px;">
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        💬 Get My Confirmation
+      </a>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 mb-10">
