@@ -13,6 +13,7 @@ export default defineConfig({
         checkout: resolve(__dirname, 'checkout.html'),
         orderConfirmed: resolve(__dirname, 'order-confirmed.html'),
         myOrders: resolve(__dirname, 'my-orders.html'),
+        tryOn: resolve(__dirname, 'try-on.html'),
       }
     }
   },
