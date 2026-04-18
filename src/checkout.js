@@ -130,9 +130,11 @@ export function initCheckout() {
       `🎉 *Order Confirmed — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\nHeyy ${order.customer.name}! Your order is placed 💛\n\n📦 *Order ID:* ${order.orderId}\n\n🧾 *What you ordered:*\n${itemLinesCust}\n\n✅ *Total: ₹${order.total}*\n\n💳 Please scan the QR and send payment screenshot here or on Instagram DM @snehkriti.in\n\n🚚 We'll start crafting once payment is confirmed!\n━━━━━━━━━━━━━━━━━━━━━\nWith love, Sneha 🌸`
     );
 
-    // Triggered from form submit (user gesture) — browsers allow window.open here
+    // Store customer WhatsApp URL for auto-redirect on confirmation page
+    localStorage.setItem('snehkriti_customer_wa', `https://wa.me/91${order.customer.phone}?text=${customerMsg}`);
+
+    // Open owner WhatsApp directly (user gesture — never blocked)
     window.open(`https://wa.me/919131765331?text=${ownerMsg}`, '_blank');
-    window.open(`https://wa.me/91${order.customer.phone}?text=${customerMsg}`, '_blank');
 
     window.location.href = 'order-confirmed.html';
   });

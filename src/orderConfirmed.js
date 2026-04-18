@@ -9,6 +9,24 @@ const root = document.getElementById('confirmed-root');
 if (!order) {
   window.location.href = 'index.html';
 } else {
+  // Auto-open customer WhatsApp after 3 seconds (sequential, never blocked)
+  const customerWaUrl = localStorage.getItem('snehkriti_customer_wa');
+  if (customerWaUrl) {
+    localStorage.removeItem('snehkriti_customer_wa');
+    let secs = 3;
+    const interval = setInterval(() => {
+      secs--;
+      const el = document.getElementById('wa-countdown');
+      if (el) el.textContent = `Sending your confirmation in ${secs}s...`;
+      if (secs <= 0) {
+        clearInterval(interval);
+        window.open(customerWaUrl, '_blank');
+        const el2 = document.getElementById('wa-countdown');
+        if (el2) el2.textContent = '✅ WhatsApp confirmation sent!';
+      }
+    }, 1000);
+  }
+
   const DM = "font-family:'DM Sans',sans-serif;";
 
   const itemsHtml = order.items.map(i => `
@@ -36,6 +54,7 @@ if (!order) {
       <p class="text-lg mb-2" style="${DM}">Thank you <strong class="text-[#d4a373]">${order.customer.name}</strong>! Your piece of art is being crafted with love.</p>
       <div class="bg-[#feeafa] text-[#d4a373] px-6 py-2 rounded-full text-base font-semibold shadow-md inline-block mb-3" style="${DM}">Order #${order.orderId}</div>
       <p class="text-sm text-[#6c757d] italic" style="${DM}">📲 WhatsApp confirmation has been sent to your number 🌸</p>
+      <p id="wa-countdown" class="text-sm font-semibold text-[#25D366] mt-1" style="${DM}">Sending your confirmation in 3s...</p>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 mb-10">
