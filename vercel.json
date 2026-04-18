@@ -1,6 +1,8 @@
 {
+  "framework": null,
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "installCommand": "npm install",
   "rewrites": [
     { "source": "/products", "destination": "/products.html" },
     { "source": "/product-detail", "destination": "/product-detail.html" },
