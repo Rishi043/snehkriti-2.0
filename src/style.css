@@ -897,3 +897,6 @@ body {
   transform: translateY(-4px) rotate(0.5deg);
   box-shadow: 0 12px 32px rgba(0,0,0,0.18);
 }
+
+/* Print Diary horizontal scroll - hide scrollbar */
+.diary-scroll::-webkit-scrollbar { display: none; }

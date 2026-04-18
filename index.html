@@ -27,7 +27,16 @@
     </header> 
 
    <!-- Navigation -->
-      <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+         <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+     <!-- Desktop nav -->
+     <div class="hidden md:flex justify-center gap-x-8 py-4 handwritten text-xl">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#home" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#gallery" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Gallery</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Collections</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#about" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Our Story</a></li>
+       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">My Orders</a></li>
+     </div>
+     <!-- Mobile hamburger bar -->
      <div class="md:hidden px-4 py-3">
        <button id="nav-toggle" onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');this.classList.toggle('open');" class="flex flex-col gap-1.5 p-1 focus:outline-none relative w-7 h-7">
          <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
@@ -35,12 +44,13 @@
          <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
        </button>
      </div>
-     <ul id="nav-menu" class="hidden md:flex md:flex-wrap md:justify-center md:gap-x-6 md:gap-y-2 md:py-4 flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20 md:border-0">
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="#home" class="hover:text-[#d4a373] transition-all duration-300 block">Home</a></li>
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="#gallery" class="hover:text-[#d4a373] transition-all duration-300 block">Gallery</a></li>
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block">Collections</a></li>
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="#about" class="hover:text-[#d4a373] transition-all duration-300 block">Our Story</a></li>
-       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block">My Orders</a></li>
+     <!-- Mobile dropdown -->
+     <ul id="nav-menu" class="hidden md:hidden flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#home" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#gallery" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Gallery</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Collections</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="#about" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Our Story</a></li>
+       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">My Orders</a></li>
      </ul>
    </nav>
 
@@ -292,9 +302,9 @@
         </div>
 
         <!-- episode grid -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div class="flex gap-4 overflow-x-auto pb-2" style="-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-snap-type:x mandatory;">
 
-            <a href="https://www.instagram.com/reel/DLsDLWOJrQ3/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/reel/DLsDLWOJrQ3/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 1.jpg" alt="Ep. 01" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -311,7 +321,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/reel/DLxMXnztSae/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/reel/DLxMXnztSae/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 2.jpg" alt="Ep. 02" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -328,7 +338,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/reel/DL2VprOthmU/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/reel/DL2VprOthmU/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 3.jpg" alt="Ep. 03" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -345,7 +355,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/reel/DMApL-YtDtD/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/reel/DMApL-YtDtD/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 4.jpg" alt="Ep. 04" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -362,7 +372,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DMIisQypk2u/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DMIisQypk2u/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 5.jpg" alt="Ep. 05" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -379,7 +389,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DMVPsG9ps5B/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DMVPsG9ps5B/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 6.jpg" alt="Ep. 06" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -396,7 +406,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DMaYhCYJ-Jk/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DMaYhCYJ-Jk/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 7.jpg" alt="Ep. 07" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -413,7 +423,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DMx9krvyj0z/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DMx9krvyj0z/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 8.jpg" alt="Ep. 08" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -430,7 +440,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DM-cu5-NY1s/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DM-cu5-NY1s/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/episode 9.jpg" alt="Ep. 09" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
@@ -447,7 +457,7 @@
                     </div>
                 </div>
             </a>
-            <a href="https://www.instagram.com/snehkriti.in/reel/DNGK5vmp4z2/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl aspect-square block">
+            <a href="https://www.instagram.com/snehkriti.in/reel/DNGK5vmp4z2/" target="_blank" class="diary-card group relative overflow-hidden rounded-2xl block flex-shrink-0" style="width:200px;height:200px;scroll-snap-align:start;">
                 <img src="/images/last episode.jpg" alt="Finale ✨" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                 <!-- film grain overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>

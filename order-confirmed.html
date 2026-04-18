@@ -21,7 +21,14 @@
     </div>
   </header>
 
-     <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+        <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+     <!-- Desktop nav -->
+     <div class="hidden md:flex justify-center gap-x-8 py-4 handwritten text-xl">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="index.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Shop All</a></li>
+       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">My Orders</a></li>
+     </div>
+     <!-- Mobile hamburger bar -->
      <div class="md:hidden px-4 py-3">
        <button id="nav-toggle" onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');this.classList.toggle('open');" class="flex flex-col gap-1.5 p-1 focus:outline-none relative w-7 h-7">
          <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
@@ -29,10 +36,11 @@
          <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
        </button>
      </div>
-     <ul id="nav-menu" class="hidden md:flex md:flex-wrap md:justify-center md:gap-x-6 md:gap-y-2 md:py-4 flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20 md:border-0">
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="index.html" class="hover:text-[#d4a373] transition-all duration-300 block">Home</a></li>
-       <li class="py-3 border-b border-[#d4a373] border-opacity-10 md:border-0 md:py-0"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block">Shop All</a></li>
-       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block">My Orders</a></li>
+     <!-- Mobile dropdown -->
+     <ul id="nav-menu" class="hidden md:hidden flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="index.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Shop All</a></li>
+       <li class="py-3 md:py-0"><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">My Orders</a></li>
      </ul>
    </nav>
 
