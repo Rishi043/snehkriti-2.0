@@ -887,3 +887,13 @@ body {
 #nav-toggle.open .nav-bar:nth-child(1) { transform: translateY(8px) rotate(45deg); }
 #nav-toggle.open .nav-bar:nth-child(2) { opacity: 0; }
 #nav-toggle.open .nav-bar:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+/* Print Diary cards */
+.diary-card {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.diary-card:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+}
