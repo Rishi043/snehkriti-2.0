@@ -5,19 +5,33 @@ import { products } from './products.js';
 updateAllBadges();
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-// Get your free API key from https://replicate.com → Sign in with GitHub/Google
-// → Account Settings → API Tokens → Create token
-// Free tier gives enough credits to test
 const REPLICATE_API_KEY = import.meta.env.VITE_REPLICATE_API_KEY || '';
+const MAX_FREE_CREDITS = 200;
+const CREDITS_KEY = 'snehkriti_tryon_credits';
+
+// ── CREDIT COUNTER ────────────────────────────────────────────────────────────
+function getCreditsUsed() {
+  return parseInt(localStorage.getItem(CREDITS_KEY) || '0');
+}
+function useCredit() {
+  localStorage.setItem(CREDITS_KEY, getCreditsUsed() + 1);
+  updateCreditDisplay();
+}
+function updateCreditDisplay() {
+  const used = getCreditsUsed();
+  const remaining = MAX_FREE_CREDITS - used;
+  const el = document.getElementById('credit-counter');
+  if (!el) return;
+  el.textContent = `✨ ${remaining} free try-ons remaining`;
+  el.style.color = remaining <= 20 ? '#e91e63' : '#d4a373';
+}
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let userPhotoBase64 = null;
 let selectedProduct = null;
 
 // ── PRODUCT GRID ──────────────────────────────────────────────────────────────
-// Only show tees and hoodies (wearable items)
 const tryOnProducts = products.filter(p => p.images[0]);
-
 const grid = document.getElementById('product-grid');
 grid.innerHTML = tryOnProducts.map(p => `
   <div class="product-card-try" id="pcard-${p.id}" onclick="selectProduct(${p.id})">
@@ -40,18 +54,31 @@ const uploadZone = document.getElementById('upload-zone');
 photoInput.addEventListener('change', e => {
   const file = e.target.files[0];
   if (!file) return;
+  // Resize image to max 1024px to avoid payload too large errors
+  const img = new Image();
   const reader = new FileReader();
   reader.onload = ev => {
-    userPhotoBase64 = ev.target.result; // full data URL
-    document.getElementById('preview-img').src = userPhotoBase64;
-    document.getElementById('upload-placeholder').classList.add('hidden');
-    document.getElementById('upload-preview').classList.remove('hidden');
-    checkReady();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const max = 1024;
+      let w = img.width, h = img.height;
+      if (w > max || h > max) {
+        if (w > h) { h = Math.round(h * max / w); w = max; }
+        else { w = Math.round(w * max / h); h = max; }
+      }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      userPhotoBase64 = canvas.toDataURL('image/jpeg', 0.85);
+      document.getElementById('preview-img').src = userPhotoBase64;
+      document.getElementById('upload-placeholder').classList.add('hidden');
+      document.getElementById('upload-preview').classList.remove('hidden');
+      checkReady();
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 });
 
-// Drag and drop
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
 uploadZone.addEventListener('drop', e => {
@@ -77,25 +104,27 @@ window.startTryOn = async function() {
   if (!userPhotoBase64 || !selectedProduct) return;
 
   if (!REPLICATE_API_KEY) {
-    showError('Please add your Replicate API key in tryOnPage.js to use this feature.');
+    showError('API key not configured. Please add VITE_REPLICATE_API_KEY in Vercel environment variables.');
+    return;
+  }
+
+  const remaining = MAX_FREE_CREDITS - getCreditsUsed();
+  if (remaining <= 0) {
+    showError('Free try-on credits exhausted. Please contact Snehkriti to top up.');
     return;
   }
 
   showLoading();
 
   try {
-    // garment image must be a public URL
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
 
-    // strip data URL prefix for human image
-    const base64Image = userPhotoBase64.split(',')[1];
-
-    // Use IDM-VTON model on Replicate
+    // Use Replicate deployment proxy to avoid CORS
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${REPLICATE_API_KEY}`
+        'Authorization': `Token ${REPLICATE_API_KEY}`
       },
       body: JSON.stringify({
         version: 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4',
@@ -113,18 +142,23 @@ window.startTryOn = async function() {
 
     if (!response.ok) {
       const err = await response.json();
-      throw new Error(err.detail || err.message || 'API error');
+      throw new Error(err.detail || JSON.stringify(err));
     }
 
     const prediction = await response.json();
-
-    // Poll for result
     const resultUrl = await pollReplicate(prediction.id);
+
+    useCredit();
     showResult(resultUrl);
 
   } catch (err) {
-    showError(err.message || 'Something went wrong. Please try again.');
     console.error('Try-on error:', err);
+    // CORS error check
+    if (err.message === 'Failed to fetch') {
+      showError('Network error — make sure VITE_REPLICATE_API_KEY is set in Vercel and redeploy.');
+    } else {
+      showError(err.message || 'Something went wrong. Please try again.');
+    }
   }
 };
 
@@ -133,7 +167,7 @@ async function pollReplicate(id) {
   for (let i = 0; i < maxAttempts; i++) {
     await new Promise(r => setTimeout(r, 3000));
     const res = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
-      headers: { 'Authorization': `Bearer ${REPLICATE_API_KEY}` }
+      headers: { 'Authorization': `Token ${REPLICATE_API_KEY}` }
     });
     const data = await res.json();
     if (data.status === 'succeeded') return Array.isArray(data.output) ? data.output[0] : data.output;
@@ -175,18 +209,18 @@ window.resetResult = function() {
   document.getElementById('result-idle').classList.remove('hidden');
 };
 
-// ── DOWNLOAD ──────────────────────────────────────────────────────────────────
 window.downloadResult = function() {
   const img = document.getElementById('result-img').src;
   const a = document.createElement('a');
-  a.href = img;
-  a.download = `snehkriti-tryon-${selectedProduct.name}.jpg`;
+  a.href = img; a.download = `snehkriti-tryon-${selectedProduct.name}.jpg`;
   a.click();
 };
 
-// ── ADD TO CART ───────────────────────────────────────────────────────────────
 window.addSelectedToCart = function() {
   if (!selectedProduct) return;
   addToCart(selectedProduct, '', 1);
   showToast('Added to cart! 🛍️');
 };
+
+// Init credit display
+updateCreditDisplay();
