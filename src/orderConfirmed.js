@@ -24,27 +24,39 @@ if (!order) {
   const payText = encodeURIComponent(`Hi! I've paid for Order ${order.orderId}. Attaching payment screenshot.`);
   const customerPhone = '91' + order.customer.phone;
 
-  // Build messages
+  // Message 1: To Snehkriti (owner) — full order details
   const itemLinesOwner = order.items.map(i =>
     `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} | ₹${i.price * i.qty}`
   ).join('\n');
+
+  const ownerMsg = encodeURIComponent(
+    `🛍️ *New Order — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Order ID:* ${order.orderId}\n\n👤 *Customer*\nName: ${order.customer.name}\nPhone: +91 ${order.customer.phone}\nEmail: ${order.customer.email || 'Not provided'}\n\n📍 *Address*\n${order.customer.address1}\n${order.customer.city}, ${order.customer.state} — ${order.customer.pincode}\n\n🧾 *Items*\n${itemLinesOwner}\n\n💰 Subtotal: ₹${order.subtotal} | Delivery: ₹${order.delivery}\n✅ *TOTAL: ₹${order.total}*\n\n📝 Notes: ${order.customer.notes || 'None'}\n━━━━━━━━━━━━━━━━━━━━━\nPlease process this order! 🙏`
+  );
+
+  // Message 2: From Snehkriti TO customer — confirmation message
+  // Opens WhatsApp on Snehkriti's phone with customer's number pre-filled
   const itemLinesCust = order.items.map(i =>
     `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} — ₹${i.price * i.qty}`
   ).join('\n');
 
-  const ownerMsg = encodeURIComponent(`🛍️ *New Order — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Order ID:* ${order.orderId}\n\n👤 *Customer*\nName: ${order.customer.name}\nPhone: +91 ${order.customer.phone}\nEmail: ${order.customer.email || 'Not provided'}\n\n📍 *Address*\n${order.customer.address1}\n${order.customer.city}, ${order.customer.state} — ${order.customer.pincode}\n\n🧾 *Items*\n${itemLinesOwner}\n\n💰 Subtotal: ₹${order.subtotal} | Delivery: ₹${order.delivery}\n✅ *TOTAL: ₹${order.total}*\n\n📝 Notes: ${order.customer.notes || 'None'}\n━━━━━━━━━━━━━━━━━━━━━\nPlease process this order! 🙏`);
+  const customerMsg = encodeURIComponent(
+    `🎉 *Order Confirmed — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\nHeyy ${order.customer.name}! Your order is placed 💛\n\n📦 *Order ID:* ${order.orderId}\n\n🧾 *What you ordered:*\n${itemLinesCust}\n\n✅ *Total: ₹${order.total}*\n\n💳 Please scan the QR and send payment screenshot here or on Instagram DM @snehkriti.in\n\n🚚 We'll start crafting once payment is confirmed!\n━━━━━━━━━━━━━━━━━━━━━\nWith love, Sneha 🌸`
+  );
 
-  const customerMsg = encodeURIComponent(`🎉 *Order Confirmed — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\nHeyy ${order.customer.name}! Your order is placed 💛\n\n📦 *Order ID:* ${order.orderId}\n\n🧾 *What you ordered:*\n${itemLinesCust}\n\n✅ *Total: ₹${order.total}*\n\n💳 Please scan the QR and send payment screenshot here or on Instagram DM @snehkriti.in\n\n🚚 We'll start crafting once payment is confirmed!\n━━━━━━━━━━━━━━━━━━━━━\nWith love, Sneha 🌸`);
-
-  // This function is called on button click — browser allows window.open from user gesture
+  // On button click:
+  // 1. Opens WhatsApp to OWNER with order details (Snehkriti receives order)
+  // 2. Opens WhatsApp from OWNER to CUSTOMER number (Snehkriti sends confirmation to customer)
   window.sendWhatsAppMessages = function() {
+    // Open owner's WhatsApp with order details
     window.open(`https://wa.me/${OWNER_PHONE}?text=${ownerMsg}`, '_blank');
+    // Open WhatsApp to customer's number with confirmation message (Snehkriti sends this)
     setTimeout(() => {
       window.open(`https://wa.me/${customerPhone}?text=${customerMsg}`, '_blank');
     }, 800);
-    document.getElementById('wa-btn').innerHTML = '✅ Messages Sent!';
-    document.getElementById('wa-btn').style.opacity = '0.7';
-    document.getElementById('wa-btn').style.pointerEvents = 'none';
+    const btn = document.getElementById('wa-btn');
+    btn.innerHTML = '✅ Messages Sent!';
+    btn.style.opacity = '0.7';
+    btn.style.pointerEvents = 'none';
   };
 
   root.innerHTML = `
@@ -60,7 +72,6 @@ if (!order) {
       <p class="text-lg mb-2" style="${DM}">Thank you <strong class="text-[#d4a373]">${order.customer.name}</strong>! Your piece of art is being crafted with love.</p>
       <div class="bg-[#feeafa] text-[#d4a373] px-6 py-2 rounded-full text-base font-semibold shadow-md inline-block mb-4" style="${DM}">Order #${order.orderId}</div>
 
-      <!-- Single WhatsApp button — opens both messages on one tap -->
       <div class="mb-2">
         <button id="wa-btn" onclick="sendWhatsAppMessages()"
           style="background:#25D366;color:white;border:none;border-radius:50px;padding:14px 32px;font-family:'Caveat',cursive;font-size:1.3rem;cursor:pointer;display:inline-flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(37,211,102,0.4);transition:all 0.3s;">
@@ -68,7 +79,7 @@ if (!order) {
           Send Order on WhatsApp
         </button>
       </div>
-      <p class="text-xs text-[#6c757d] italic" style="${DM}">Tap above to notify Snehkriti &amp; get your confirmation — both messages sent at once!</p>
+      <p class="text-xs text-[#6c757d] italic" style="${DM}">Tap above — Snehkriti gets your order details &amp; you get a confirmation message 🌸</p>
     </div>
 
     <div class="grid md:grid-cols-2 gap-8 mb-10">
