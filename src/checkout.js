@@ -110,11 +110,30 @@ export function initCheckout() {
 
     // Save order — WhatsApp messages are sent automatically on order-confirmed page
     localStorage.setItem('snehkriti_last_order', JSON.stringify(order));
-    // Persist to orders history
     const history = JSON.parse(localStorage.getItem('snehkriti_orders') || '[]');
     history.unshift(order);
     localStorage.setItem('snehkriti_orders', JSON.stringify(history));
     clearCart();
+
+    // Build WhatsApp messages
+    const itemLinesOwner = order.items.map(i =>
+      `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} | ₹${i.price * i.qty}`
+    ).join('\n');
+    const itemLinesCust = order.items.map(i =>
+      `• ${i.name} | Size: ${i.size || 'N/A'} | Qty: ${i.qty} — ₹${i.price * i.qty}`
+    ).join('\n');
+
+    const ownerMsg = encodeURIComponent(
+      `🛍️ *New Order — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\n📦 *Order ID:* ${order.orderId}\n\n👤 *Customer*\nName: ${order.customer.name}\nPhone: +91 ${order.customer.phone}\nEmail: ${order.customer.email || 'Not provided'}\n\n📍 *Address*\n${order.customer.address1}\n${order.customer.city}, ${order.customer.state} — ${order.customer.pincode}\n\n🧾 *Items*\n${itemLinesOwner}\n\n💰 Subtotal: ₹${order.subtotal} | Delivery: ₹${order.delivery}\n✅ *TOTAL: ₹${order.total}*\n\n📝 Notes: ${order.customer.notes || 'None'}\n━━━━━━━━━━━━━━━━━━━━━\nPlease process this order! 🙏`
+    );
+    const customerMsg = encodeURIComponent(
+      `🎉 *Order Confirmed — SNEHKRITI!*\n━━━━━━━━━━━━━━━━━━━━━\nHeyy ${order.customer.name}! Your order is placed 💛\n\n📦 *Order ID:* ${order.orderId}\n\n🧾 *What you ordered:*\n${itemLinesCust}\n\n✅ *Total: ₹${order.total}*\n\n💳 Please scan the QR and send payment screenshot here or on Instagram DM @snehkriti.in\n\n🚚 We'll start crafting once payment is confirmed!\n━━━━━━━━━━━━━━━━━━━━━\nWith love, Sneha 🌸`
+    );
+
+    // Triggered from form submit (user gesture) — browsers allow window.open here
+    window.open(`https://wa.me/919131765331?text=${ownerMsg}`, '_blank');
+    window.open(`https://wa.me/91${order.customer.phone}?text=${customerMsg}`, '_blank');
+
     window.location.href = 'order-confirmed.html';
   });
 }
