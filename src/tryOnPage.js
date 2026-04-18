@@ -84,21 +84,24 @@ window.startTryOn = async function() {
   showLoading();
 
   try {
-    // Use IDM-VTON model on Replicate - best free virtual try-on model
+    // garment image must be a public URL
+    const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
+
+    // strip data URL prefix for human image
+    const base64Image = userPhotoBase64.split(',')[1];
+
+    // Use IDM-VTON model on Replicate
     const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${REPLICATE_API_KEY}`,
-        'Prefer': 'wait'
+        'Authorization': `Bearer ${REPLICATE_API_KEY}`
       },
       body: JSON.stringify({
         version: 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4',
         input: {
           human_img: userPhotoBase64,
-          garm_img: selectedProduct.images[0].startsWith('/')
-            ? window.location.origin + selectedProduct.images[0]
-            : selectedProduct.images[0],
+          garm_img: garmentUrl,
           garment_des: selectedProduct.name,
           is_checked: true,
           is_checked_crop: false,
@@ -121,6 +124,7 @@ window.startTryOn = async function() {
 
   } catch (err) {
     showError(err.message || 'Something went wrong. Please try again.');
+    console.error('Try-on error:', err);
   }
 };
 
@@ -132,7 +136,7 @@ async function pollReplicate(id) {
       headers: { 'Authorization': `Bearer ${REPLICATE_API_KEY}` }
     });
     const data = await res.json();
-    if (data.status === 'succeeded') return data.output;
+    if (data.status === 'succeeded') return Array.isArray(data.output) ? data.output[0] : data.output;
     if (data.status === 'failed') throw new Error(data.error || 'Try-on failed');
   }
   throw new Error('Timed out. Please try again.');
