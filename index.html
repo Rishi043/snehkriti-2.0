@@ -653,75 +653,91 @@
 </section>
 
 <!-- Customer Says Section -->
-<section id="testimonials" class="py-20 px-4 relative overflow-hidden" style="background:linear-gradient(160deg,#1a0f0a 0%,#2d1a10 40%,#1f1208 100%);">
+<section id="testimonials" class="py-20 px-4 bg-gradient-to-br from-[#f9f1f0] via-[#f5ebe0] to-[#f8edeb] relative overflow-hidden">
 
-    <!-- ambient glows -->
-    <div class="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(212,163,115,0.08),transparent 70%);"></div>
-    <div class="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none" style="background:radial-gradient(circle,rgba(233,30,99,0.06),transparent 70%);"></div>
+    <!-- decorative ink blobs -->
+    <div class="absolute -top-10 -right-10 w-64 h-64 rounded-full pointer-events-none opacity-20" style="background:radial-gradient(circle,#d4a373,transparent 70%);"></div>
+    <div class="absolute -bottom-10 -left-10 w-48 h-48 rounded-full pointer-events-none opacity-15" style="background:radial-gradient(circle,#e91e63,transparent 70%);"></div>
+    <!-- floating elements -->
+    <div class="absolute top-10 left-10 floating opacity-20">
+        <svg width="30" height="30" viewBox="0 0 30 30" class="text-[#d4a373]"><path fill="currentColor" d="M15 2l3.5 7 7.5 1-5.5 5 1.5 7.5L15 19l-6.5 3.5L10 15 4.5 10l7.5-1L15 2z"/></svg>
+    </div>
+    <div class="absolute bottom-16 right-10 floating opacity-15" style="animation-delay:-3s;">
+        <svg width="22" height="22" viewBox="0 0 22 22" class="text-pink-400"><path fill="currentColor" d="M11 1l2.5 7h7l-5.5 4 2 7L11 15l-6 4 2-7L1 8h7L11 1z"/></svg>
+    </div>
 
     <div class="container mx-auto max-w-5xl relative z-10">
 
         <!-- header -->
         <div class="text-center mb-14">
-            <p class="handwritten text-[#d4a373] text-lg italic opacity-60 mb-2">straight from the heart</p>
-            <h2 class="text-4xl md:text-5xl handwritten font-bold text-white mb-4">What Our Hearts Say 🤍</h2>
-            <div class="flex items-center justify-center gap-3">
-                <div class="h-px w-16 bg-gradient-to-r from-transparent to-[#d4a373] opacity-60"></div>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#d4a373" opacity="0.8"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <div class="h-px w-16 bg-gradient-to-l from-transparent to-[#d4a373] opacity-60"></div>
+            <span class="handwritten text-[#d4a373] text-lg italic opacity-70">worn with love</span>
+            <h2 class="text-4xl md:text-5xl handwritten font-bold text-[#d4a373] mt-1 mb-4">What Our Hearts Say 🤍</h2>
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <div class="h-px w-16 bg-gradient-to-r from-transparent to-[#d4a373]"></div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#d4a373"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <div class="h-px w-16 bg-gradient-to-l from-transparent to-[#d4a373]"></div>
             </div>
+            <p class="handwritten text-lg text-[#6c757d] italic max-w-2xl mx-auto">Every stitch carries a story, every color holds an emotion.</p>
         </div>
 
-        <!-- testimonial cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <!-- cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
 
             <!-- Card 1 -->
-            <div class="group relative rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1" style="background:rgba(255,255,255,0.04);border:1px solid rgba(212,163,115,0.2);backdrop-filter:blur(8px);">
-                <!-- top accent line -->
-                <div class="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#d4a373] to-transparent opacity-40"></div>
-                <!-- big quote -->
-                <div class="text-5xl text-[#d4a373] opacity-20 font-serif leading-none mb-2">"</div>
+            <div class="group relative bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+                <!-- washi tape top -->
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-20 h-5 rounded-sm rotate-1 opacity-70" style="background:linear-gradient(90deg,#fcd5ce,#fec89a);"></div>
+                <!-- big faded quote -->
+                <div class="absolute top-4 right-5 handwritten text-8xl text-[#d4a373] opacity-10 leading-none select-none">"</div>
+                <!-- top accent -->
+                <div class="w-10 h-1 rounded-full bg-gradient-to-r from-[#d4a373] to-[#e91e63] mb-5"></div>
                 <!-- stars -->
-                <div class="flex gap-1 mb-3">
-                    <span class="text-[#d4a373] text-sm">★★★★★</span>
+                <div class="flex gap-0.5 mb-4">
+                    <span class="text-[#d4a373]">★★★★★</span>
                 </div>
-                <p class="handwritten text-lg text-[#e8ddd2] leading-relaxed italic mb-6">
+                <p class="handwritten text-xl text-[#5e503f] leading-relaxed italic mb-7">
                     "Fast delivery, beautiful packaging, and the tee quality is top-notch! This is my third order and definitely won't be my last. Highly recommended!"
                 </p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold handwritten text-lg" style="background:linear-gradient(135deg,#d4a373,#b08968);">K</div>
+                <!-- divider -->
+                <div class="h-px bg-gradient-to-r from-transparent via-[#d4a373] to-transparent opacity-30 mb-5"></div>
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold handwritten text-xl flex-shrink-0" style="background:linear-gradient(135deg,#d4a373,#b08968);">K</div>
                     <div>
-                        <p class="handwritten text-[#d4a373] text-lg font-bold">Kavya</p>
-                        <p class="handwritten text-xs opacity-50 text-[#e8ddd2]">Repeat Customer ✦</p>
+                        <p class="handwritten text-xl font-bold text-[#d4a373]">Kavya</p>
+                        <p class="handwritten text-sm text-[#6c757d]">Repeat Customer · 3 orders 🛍️</p>
                     </div>
+                    <div class="ml-auto bg-[#feeafa] text-[#d4a373] handwritten text-xs px-3 py-1 rounded-full">Verified ✓</div>
                 </div>
             </div>
 
             <!-- Card 2 -->
-            <div class="group relative rounded-2xl p-6 transition-all duration-500 hover:-translate-y-1" style="background:rgba(255,255,255,0.04);border:1px solid rgba(212,163,115,0.2);backdrop-filter:blur(8px);">
-                <div class="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-[#d4a373] to-transparent opacity-40"></div>
-                <div class="text-5xl text-[#d4a373] opacity-20 font-serif leading-none mb-2">"</div>
-                <div class="flex gap-1 mb-3">
-                    <span class="text-[#d4a373] text-sm">★★★★★</span>
+            <div class="group relative bg-white rounded-3xl p-7 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 overflow-hidden">
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-20 h-5 rounded-sm -rotate-1 opacity-70" style="background:linear-gradient(90deg,#c8e6c9,#a5d6a7);"></div>
+                <div class="absolute top-4 right-5 handwritten text-8xl text-[#d4a373] opacity-10 leading-none select-none">"</div>
+                <div class="w-10 h-1 rounded-full bg-gradient-to-r from-[#d4a373] to-[#b08968] mb-5"></div>
+                <div class="flex gap-0.5 mb-4">
+                    <span class="text-[#d4a373]">★★★★★</span>
                 </div>
-                <p class="handwritten text-lg text-[#e8ddd2] leading-relaxed italic mb-6">
+                <p class="handwritten text-xl text-[#5e503f] leading-relaxed italic mb-7">
                     "The Bulbasaur tee is absolutely adorable! The quality is amazing and it feels like wearing a warm hug. Perfect for Pokemon lovers!"
                 </p>
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold handwritten text-lg" style="background:linear-gradient(135deg,#d4a373,#b08968);">A</div>
+                <div class="h-px bg-gradient-to-r from-transparent via-[#d4a373] to-transparent opacity-30 mb-5"></div>
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-bold handwritten text-xl flex-shrink-0" style="background:linear-gradient(135deg,#d4a373,#b08968);">A</div>
                     <div>
-                        <p class="handwritten text-[#d4a373] text-lg font-bold">Abhishek</p>
-                        <p class="handwritten text-xs opacity-50 text-[#e8ddd2]">Pokemon Enthusiast ✦</p>
+                        <p class="handwritten text-xl font-bold text-[#d4a373]">Abhishek</p>
+                        <p class="handwritten text-sm text-[#6c757d]">Pokemon Enthusiast 💚</p>
                     </div>
+                    <div class="ml-auto bg-[#feeafa] text-[#d4a373] handwritten text-xs px-3 py-1 rounded-full">Verified ✓</div>
                 </div>
             </div>
 
         </div>
 
-        <!-- bottom CTA -->
+        <!-- bottom strip -->
         <div class="text-center">
-            <p class="handwritten text-lg text-[#e8ddd2] opacity-50 italic mb-6">💝 Join our happy family of 100+ customers</p>
-            <a href="products.html" class="inline-flex items-center gap-2 handwritten text-xl px-10 py-3 rounded-full text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl" style="background:linear-gradient(135deg,#d4a373,#b08968);box-shadow:0 4px 20px rgba(212,163,115,0.3);">
+            <p class="handwritten text-lg text-[#6c757d] italic mb-6">💝 Join our happy family of 100+ customers</p>
+            <a href="products.html" class="inline-flex items-center gap-2 handwritten text-xl px-10 py-3 rounded-full text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style="background:linear-gradient(135deg,#d4a373,#b08968);box-shadow:0 4px 20px rgba(212,163,115,0.35);">
                 Shop All Collections ✨
             </a>
         </div>
