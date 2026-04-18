@@ -56,6 +56,28 @@ export function initCheckout() {
 
   renderSummary();
 
+  // Autofill from last order if exists
+  const lastOrder = JSON.parse(localStorage.getItem('snehkriti_last_order') || 'null');
+  if (lastOrder && lastOrder.customer) {
+    const c = lastOrder.customer;
+    const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    set('name', c.name);
+    set('phone', c.phone);
+    set('email', c.email);
+    set('address1', c.address1);
+    set('pincode', c.pincode);
+    set('notes', c.notes);
+    // Trigger pincode lookup to fill city/state
+    if (c.pincode) window.lookupPincode && window.lookupPincode(c.pincode);
+    // Fallback: fill city/state directly if lookup fails
+    setTimeout(() => {
+      const city = document.getElementById('city');
+      const state = document.getElementById('state');
+      if (city && !city.value) city.value = c.city || '';
+      if (state && !state.value) state.value = c.state || '';
+    }, 1500);
+  }
+
   document.getElementById('checkout-form').addEventListener('submit', (e) => {
     e.preventDefault();
     if (!validate()) {
