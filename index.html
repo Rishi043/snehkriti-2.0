@@ -64,7 +64,22 @@
                     <h2 class="text-3xl md:text-4xl handwritten font-bold text-[#d4a373] mb-4">Each Piece Tells a Story</h2>
                     <p class="text-lg mb-6">Our hand-printed textiles carry whispers of emotion, memories woven into fabric, and colors that speak of love's many hues.</p>
                     <a href="products.html" class="bg-[#d4a373] hover:bg-[#b08968] text-white handwritten text-xl px-6 py-2 rounded-full transition inline-block">Explore Collections</a>
-                    <a href="try-on.html" class="border-2 border-[#d4a373] text-[#d4a373] hover:bg-[#d4a373] hover:text-white handwritten text-xl px-6 py-2 rounded-full transition inline-block mt-3">✨ Virtual Try-On</a>
+
+                    <!-- STAR FEATURE: Virtual Try-On -->
+                    <div class="mt-6">
+                      <a href="try-on.html" class="relative inline-flex items-center gap-3 text-white handwritten text-2xl px-8 py-4 rounded-full transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                        style="background:linear-gradient(135deg,#e91e63,#9c27b0,#d4a373);box-shadow:0 6px 30px rgba(233,30,99,0.4);">
+                        <!-- animated ring -->
+                        <span class="absolute inset-0 rounded-full animate-ping opacity-20" style="background:linear-gradient(135deg,#e91e63,#9c27b0);"></span>
+                        <span class="text-2xl">🪞</span>
+                        <span>Try On Virtually</span>
+                        <span class="text-xl animate-pulse">✨</span>
+                      </a>
+                      <div class="mt-2 flex items-center justify-center gap-2">
+                        <span class="inline-block bg-[#e91e63] text-white handwritten text-xs px-3 py-0.5 rounded-full animate-bounce">NEW</span>
+                        <p class="handwritten text-sm text-[#6c757d] italic">See how it looks on YOU before buying!</p>
+                      </div>
+                    </div>
                 </div>
 
                 <div class="relative">
@@ -83,6 +98,36 @@
             </div>
         </div>
     </div>
+</section>
+
+<!-- Virtual Try-On Banner -->
+<section class="px-4 pb-8">
+  <div class="container mx-auto max-w-3xl">
+    <a href="try-on.html" class="relative block rounded-3xl overflow-hidden group transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+       style="background:linear-gradient(135deg,#1a0f0a 0%,#4a1942 50%,#1a0f0a 100%);">
+
+      <!-- animated bg blobs -->
+      <div class="absolute top-0 left-0 w-48 h-48 rounded-full opacity-20 pointer-events-none" style="background:radial-gradient(circle,#e91e63,transparent);transform:translate(-30%,-30%);"></div>
+      <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full opacity-20 pointer-events-none" style="background:radial-gradient(circle,#d4a373,transparent);transform:translate(30%,30%);"></div>
+
+      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6 px-8 py-7">
+        <div class="text-center md:text-left">
+          <div class="flex items-center gap-2 justify-center md:justify-start mb-2">
+            <span class="bg-[#e91e63] text-white handwritten text-sm px-3 py-0.5 rounded-full animate-bounce">✦ NEW FEATURE</span>
+          </div>
+          <h3 class="handwritten font-bold text-white mb-1" style="font-size:2rem;">Virtual Try-On 🪞</h3>
+          <p class="handwritten text-lg italic" style="color:rgba(255,255,255,0.7);">See how our designs look on YOU — powered by AI ✨</p>
+          <p class="handwritten text-sm mt-1" style="color:rgba(212,163,115,0.8);">Upload your photo · Pick a design · See the magic</p>
+        </div>
+        <div class="flex-shrink-0">
+          <span class="inline-flex items-center gap-2 text-white handwritten text-xl px-7 py-3 rounded-full transition-all duration-300 group-hover:scale-105"
+            style="background:linear-gradient(135deg,#e91e63,#9c27b0);box-shadow:0 4px 20px rgba(233,30,99,0.5);">
+            ✨ Try It Now
+          </span>
+        </div>
+      </div>
+    </a>
+  </div>
 </section>
 
 <!-- Gallery Section - Organic Grid -->
