@@ -5,9 +5,10 @@ import { products } from './products.js';
 updateAllBadges();
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-// Get your free API key from https://fashn.ai → Dashboard → API Keys
-// Paste it below (free tier = 200 credits, 1 credit per try-on)
-const FASHN_API_KEY = 'YOUR_FASHN_API_KEY';
+// Get your free API key from https://replicate.com → Sign in with GitHub/Google
+// → Account Settings → API Tokens → Create token
+// Free tier gives enough credits to test
+const REPLICATE_API_KEY = import.meta.env.VITE_REPLICATE_API_KEY || '';
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
 let userPhotoBase64 = null;
@@ -75,28 +76,35 @@ function checkReady() {
 window.startTryOn = async function() {
   if (!userPhotoBase64 || !selectedProduct) return;
 
-  if (FASHN_API_KEY === 'YOUR_FASHN_API_KEY') {
-    showError('Please add your Fashn.ai API key in tryOnPage.js to use this feature.');
+  if (!REPLICATE_API_KEY) {
+    showError('Please add your Replicate API key in tryOnPage.js to use this feature.');
     return;
   }
 
   showLoading();
 
   try {
-    // Step 1: Start the try-on job
-    const response = await fetch('https://api.fashn.ai/v1/run', {
+    // Use IDM-VTON model on Replicate - best free virtual try-on model
+    const response = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${FASHN_API_KEY}`
+        'Authorization': `Bearer ${REPLICATE_API_KEY}`,
+        'Prefer': 'wait'
       },
       body: JSON.stringify({
-        model_image: userPhotoBase64,
-        garment_image: selectedProduct.images[0].startsWith('/')
-          ? window.location.origin + selectedProduct.images[0]
-          : selectedProduct.images[0],
-        category: selectedProduct.category === 'Hoodies' ? 'tops' : 'tops',
-        mode: 'balanced' // balanced = good quality, doesn't use extra credits
+        version: 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4',
+        input: {
+          human_img: userPhotoBase64,
+          garm_img: selectedProduct.images[0].startsWith('/')
+            ? window.location.origin + selectedProduct.images[0]
+            : selectedProduct.images[0],
+          garment_des: selectedProduct.name,
+          is_checked: true,
+          is_checked_crop: false,
+          denoise_steps: 30,
+          seed: 42
+        }
       })
     });
 
@@ -105,10 +113,10 @@ window.startTryOn = async function() {
       throw new Error(err.detail || err.message || 'API error');
     }
 
-    const { id } = await response.json();
+    const prediction = await response.json();
 
-    // Step 2: Poll for result
-    const resultUrl = await pollResult(id);
+    // Poll for result
+    const resultUrl = await pollReplicate(prediction.id);
     showResult(resultUrl);
 
   } catch (err) {
@@ -116,15 +124,15 @@ window.startTryOn = async function() {
   }
 };
 
-async function pollResult(jobId) {
-  const maxAttempts = 30; // 30 × 3s = 90s max wait
+async function pollReplicate(id) {
+  const maxAttempts = 40;
   for (let i = 0; i < maxAttempts; i++) {
     await new Promise(r => setTimeout(r, 3000));
-    const res = await fetch(`https://api.fashn.ai/v1/status/${jobId}`, {
-      headers: { 'Authorization': `Bearer ${FASHN_API_KEY}` }
+    const res = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
+      headers: { 'Authorization': `Bearer ${REPLICATE_API_KEY}` }
     });
     const data = await res.json();
-    if (data.status === 'completed') return data.output[0];
+    if (data.status === 'succeeded') return data.output;
     if (data.status === 'failed') throw new Error(data.error || 'Try-on failed');
   }
   throw new Error('Timed out. Please try again.');
