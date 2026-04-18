@@ -23,10 +23,10 @@
 
      <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
      <div class="md:hidden px-4 py-3">
-       <button onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');" class="flex flex-col gap-1.5 p-1 focus:outline-none">
-         <span class="block w-6 h-0.5 bg-[#d4a373]"></span>
-         <span class="block w-6 h-0.5 bg-[#d4a373]"></span>
-         <span class="block w-6 h-0.5 bg-[#d4a373]"></span>
+       <button id="nav-toggle" onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');this.classList.toggle('open');" class="flex flex-col gap-1.5 p-1 focus:outline-none relative w-7 h-7">
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300"></span>
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
        </button>
      </div>
      <ul id="nav-menu" class="hidden md:flex md:flex-wrap md:justify-center md:gap-x-6 md:gap-y-2 md:py-4 flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20 md:border-0">
