@@ -7,9 +7,11 @@ export default async function handler(req, res) {
   const { session_hash } = req.query;
   if (!session_hash) return res.status(400).json({ error: 'Missing session_hash' });
 
+  const BASE = 'https://yisol-idm-vton.hf.space';
+
   try {
     const statusRes = await fetch(
-      `https://yisol-idm-vton.hf.space/queue/status?session_hash=${session_hash}`,
+      `${BASE}/queue/status?session_hash=${session_hash}`,
       { headers: { 'Authorization': `Bearer ${hfToken}` } }
     );
 
@@ -18,13 +20,15 @@ export default async function handler(req, res) {
     const data = await statusRes.json();
 
     if (data.status === 'complete' && data.output?.data) {
+      // output[0] is the result image, output[1] is the masked image
       const output = data.output.data[0];
-      const imageUrl = typeof output === 'string' ? output : (output.url || output.path);
+      const imageUrl = output?.url || (output?.path ? `${BASE}/file=${output.path}` : null);
+      if (!imageUrl) return res.status(200).json({ status: 'error', error: 'No output image' });
       return res.status(200).json({ status: 'complete', output: imageUrl });
     }
 
     if (data.status === 'error') {
-      return res.status(200).json({ status: 'error', error: String(data.output || 'Failed') });
+      return res.status(200).json({ status: 'error', error: String(data.output || 'Processing failed') });
     }
 
     return res.status(200).json({ status: data.status || 'pending', queue_position: data.queue_size });
