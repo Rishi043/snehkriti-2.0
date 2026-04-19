@@ -7,6 +7,10 @@ updateAllBadges();
 const BASE = 'https://yisol-idm-vton.hf.space';
 const MAX_FREE_CREDITS = 200;
 const CREDITS_KEY = 'snehkriti_tryon_credits';
+let HF_TOKEN = '';
+
+// Fetch HF token from server on load
+fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || ''; });
 
 function getCreditsUsed() { return parseInt(localStorage.getItem(CREDITS_KEY) || '0'); }
 function useCredit() { localStorage.setItem(CREDITS_KEY, getCreditsUsed() + 1); updateCreditDisplay(); }
@@ -95,10 +99,14 @@ function checkReady() {
 async function uploadToHF(file) {
   const form = new FormData();
   form.append('files', file);
-  const res = await fetch(`${BASE}/upload`, { method: 'POST', body: form });
+  const res = await fetch(`${BASE}/upload`, {
+    method: 'POST',
+    headers: HF_TOKEN ? { 'Authorization': `Bearer ${HF_TOKEN}` } : {},
+    body: form
+  });
   if (!res.ok) throw new Error('Image upload to HF failed');
   const paths = await res.json();
-  return paths[0]; // returns the server path
+  return paths[0];
 }
 
 // ── FETCH GARMENT AS BLOB AND UPLOAD ─────────────────────────────────────────
@@ -136,7 +144,10 @@ window.startTryOn = async function() {
 
     const joinRes = await fetch(`${BASE}/queue/join`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(HF_TOKEN ? { 'Authorization': `Bearer ${HF_TOKEN}` } : {})
+      },
       body: JSON.stringify({
         fn_index: 2,
         session_hash,
@@ -167,7 +178,7 @@ async function pollHF(session_hash) {
       reject(new Error('Timed out — please try again in a moment.'));
     }, 180000); // 3 min max
 
-    const es = new EventSource(`${BASE}/queue/data?session_hash=${session_hash}`);
+    const es = new EventSource(`${BASE}/queue/data?session_hash=${session_hash}${HF_TOKEN ? '&token=' + HF_TOKEN : ''}`);
 
     es.onmessage = (event) => {
       try {
@@ -186,9 +197,8 @@ async function pollHF(session_hash) {
         }
         if (data.msg === 'process_completed') {
           es.close(); clearTimeout(timeout);
-          console.log('HF output:', JSON.stringify(data.output));
           const outputData = data.output?.data;
-          if (!outputData) return reject(new Error('No output received'));
+          if (!outputData || data.output?.error) return reject(new Error(data.output?.error || 'No output received'));
           const out = outputData[0] || outputData[1];
           if (!out) return reject(new Error('No output received'));
           const url = out?.url || (out?.path ? `${BASE}/file=${out.path}` : null)
