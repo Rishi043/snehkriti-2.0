@@ -86,6 +86,25 @@ uploadZone.addEventListener('drop', e => {
   if (file) { photoInput.files = e.dataTransfer.files; photoInput.dispatchEvent(new Event('change')); }
 });
 
+window.useExample = async function(gender) {
+  const url = gender === 'female' ? '/images/female_example.png' : '/images/male_example.png';
+  const res = await fetch(url);
+  const blob = await res.blob();
+  userPhotoFile = new File([blob], `${gender}_example.jpg`, { type: 'image/jpeg' });
+  const reader = new FileReader();
+  reader.onload = ev => {
+    userPhotoBase64 = ev.target.result;
+    document.getElementById('preview-img').src = ev.target.result;
+    document.getElementById('upload-placeholder').classList.add('hidden');
+    document.getElementById('upload-preview').classList.remove('hidden');
+    // highlight selected example
+    document.querySelectorAll('.example-photo').forEach(el => el.style.borderColor = 'transparent');
+    event.currentTarget.style.borderColor = '#d4a373';
+    checkReady();
+  };
+  reader.readAsDataURL(blob);
+};
+
 function checkReady() {
   const btn = document.getElementById('tryon-btn');
   const hint = document.getElementById('btn-hint');
