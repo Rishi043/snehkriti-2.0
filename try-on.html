@@ -152,37 +152,37 @@
         </div>
 
         <!-- Right: Result -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#d4a373] border-opacity-20 flex flex-col">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#d4a373] border-opacity-20">
           <div class="flex items-center gap-2 mb-4">
             <div class="step-badge">3</div>
             <h3 class="handwritten text-xl font-bold text-[#d4a373]">Your Look</h3>
           </div>
 
           <!-- Idle state -->
-          <div id="result-idle" class="flex-1 flex flex-col items-center justify-center py-12 text-center">
+          <div id="result-idle" class="flex flex-col items-center justify-center py-16 text-center">
             <div class="text-5xl mb-4">🪞</div>
             <p class="handwritten text-lg text-[#d4a373] mb-1">Your result will appear here</p>
             <p class="handwritten text-sm text-[#6c757d] italic">Upload photo &amp; pick a design to start</p>
           </div>
 
           <!-- Loading state -->
-          <div id="result-loading" class="hidden flex-1 flex flex-col items-center justify-center py-8 text-center">
+          <div id="result-loading" class="hidden flex flex-col items-center justify-center py-8 text-center">
             <div class="result-shimmer w-full rounded-xl mb-4" style="height:280px;"></div>
             <p class="handwritten text-lg text-[#d4a373] animate-pulse">AI is working its magic... ✨</p>
             <p class="handwritten text-sm text-[#6c757d] italic mt-1">This takes about 30-60 seconds 🌸</p>
           </div>
 
           <!-- Result state -->
-          <div id="result-done" class="hidden flex-1 flex flex-col">
-            <img id="result-img" class="w-full rounded-xl object-contain mb-4" style="max-height:360px;">
-            <div class="flex gap-3 mt-auto">
-              <button onclick="downloadResult()" class="flex-1 submit-btn-outline handwritten text-lg py-2 rounded-xl">⬇ Save</button>
-              <button id="add-cart-result" onclick="addSelectedToCart()" class="flex-1 submit-btn handwritten text-lg py-2 rounded-xl">🛍️ Add to Cart</button>
+          <div id="result-done" class="hidden flex flex-col">
+            <img id="result-img" class="w-full rounded-2xl object-cover" style="max-height:420px;object-position:top;">
+            <div class="flex gap-3 mt-4">
+              <button onclick="downloadResult()" class="flex-1 flex items-center justify-center gap-2 handwritten text-lg py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg" style="background:linear-gradient(135deg,#2d1f14,#5e3d2c);color:white;box-shadow:0 4px 14px rgba(45,31,20,0.3);">⬇ Download Image</button>
+              <button onclick="addSelectedToCart()" class="flex-1 flex items-center justify-center gap-2 handwritten text-lg py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg" style="background:linear-gradient(135deg,#e91e63,#9c27b0);color:white;box-shadow:0 4px 14px rgba(233,30,99,0.35);">🛍️ Add to Cart</button>
             </div>
           </div>
 
           <!-- Error state -->
-          <div id="result-error" class="hidden flex-1 flex flex-col items-center justify-center py-8 text-center">
+          <div id="result-error" class="hidden flex flex-col items-center justify-center py-16 text-center">
             <div class="text-4xl mb-3">😔</div>
             <p class="handwritten text-lg text-[#d4a373] mb-1">Something went wrong</p>
             <p id="error-msg" class="handwritten text-sm text-[#6c757d] italic mb-4"></p>
