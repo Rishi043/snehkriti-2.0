@@ -186,9 +186,9 @@ async function pollHF(session_hash) {
         }
         if (data.msg === 'process_completed') {
           es.close(); clearTimeout(timeout);
+          console.log('HF output:', JSON.stringify(data.output));
           const outputData = data.output?.data;
           if (!outputData) return reject(new Error('No output received'));
-          // Try index 0 first (result), fallback to index 1 (also result in some versions)
           const out = outputData[0] || outputData[1];
           if (!out) return reject(new Error('No output received'));
           const url = out?.url || (out?.path ? `${BASE}/file=${out.path}` : null)
