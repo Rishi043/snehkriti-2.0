@@ -5,7 +5,6 @@ import { products } from './products.js';
 updateAllBadges();
 
 // ── CONFIG ────────────────────────────────────────────────────────────────────
-const REPLICATE_API_KEY = import.meta.env.VITE_REPLICATE_API_KEY || '';
 const MAX_FREE_CREDITS = 200;
 const CREDITS_KEY = 'snehkriti_tryon_credits';
 
@@ -103,11 +102,6 @@ function checkReady() {
 window.startTryOn = async function() {
   if (!userPhotoBase64 || !selectedProduct) return;
 
-  if (!REPLICATE_API_KEY) {
-    showError('API key not configured. Please add VITE_REPLICATE_API_KEY in Vercel environment variables.');
-    return;
-  }
-
   const remaining = MAX_FREE_CREDITS - getCreditsUsed();
   if (remaining <= 0) {
     showError('Free try-on credits exhausted. Please contact Snehkriti to top up.');
@@ -119,46 +113,26 @@ window.startTryOn = async function() {
   try {
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
 
-    // Use Replicate deployment proxy to avoid CORS
-    const response = await fetch('https://api.replicate.com/v1/predictions', {
+    const response = await fetch('/api/tryon', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Token ${REPLICATE_API_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        version: 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4',
-        input: {
-          human_img: userPhotoBase64,
-          garm_img: garmentUrl,
-          garment_des: selectedProduct.name,
-          is_checked: true,
-          is_checked_crop: false,
-          denoise_steps: 30,
-          seed: 42
-        }
+        human_img: userPhotoBase64,
+        garm_img: garmentUrl,
+        garment_des: selectedProduct.name
       })
     });
 
-    if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.detail || JSON.stringify(err));
-    }
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || JSON.stringify(data));
 
-    const prediction = await response.json();
-    const resultUrl = await pollReplicate(prediction.id);
-
+    const resultUrl = await pollReplicate(data.id);
     useCredit();
     showResult(resultUrl);
 
   } catch (err) {
     console.error('Try-on error:', err);
-    // CORS error check
-    if (err.message === 'Failed to fetch') {
-      showError('Network error — make sure VITE_REPLICATE_API_KEY is set in Vercel and redeploy.');
-    } else {
-      showError(err.message || 'Something went wrong. Please try again.');
-    }
+    showError(err.message || 'Something went wrong. Please try again.');
   }
 };
 
@@ -166,9 +140,7 @@ async function pollReplicate(id) {
   const maxAttempts = 40;
   for (let i = 0; i < maxAttempts; i++) {
     await new Promise(r => setTimeout(r, 3000));
-    const res = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
-      headers: { 'Authorization': `Token ${REPLICATE_API_KEY}` }
-    });
+    const res = await fetch(`/api/tryon-status?id=${id}`);
     const data = await res.json();
     if (data.status === 'succeeded') return Array.isArray(data.output) ? data.output[0] : data.output;
     if (data.status === 'failed') throw new Error(data.error || 'Try-on failed');
