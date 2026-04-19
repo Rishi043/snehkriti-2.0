@@ -56,7 +56,7 @@ photoInput.addEventListener('change', e => {
   reader.onload = ev => {
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const max = 768;
+      const max = 1024;
       let w = img.width, h = img.height;
       if (w > max || h > max) {
         if (w > h) { h = Math.round(h * max / w); w = max; }
@@ -158,8 +158,8 @@ window.startTryOn = async function() {
           data: [
             { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
             { path: garmPath, url: `${BASE}/file=${garmPath}`, meta: { _type: 'gradio.FileData' } },
-            selectedProduct.name,
-            true, false, 30, 42
+            selectedProduct.garmentType || selectedProduct.name,
+            true, false, 40, 42
           ]
         })
       });
