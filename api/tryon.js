@@ -1,7 +1,7 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = process.env.REPLICATE_API_KEY;
+  const apiKey = process.env.REPLICATE_API_KEY || process.env.VITE_REPLICATE_API_KEY;
   if (!apiKey) return res.status(500).json({ error: 'API key not configured on server' });
 
   const { human_img, garm_img, garment_des } = req.body;
