@@ -9,9 +9,10 @@ const MAX_FREE_CREDITS = 200;
 const CREDITS_KEY = 'snehkriti_tryon_credits';
 let HF_TOKEN = '';
 let HF_TOKEN_BACKUP = '';
+let HF_TOKEN_BACKUP2 = '';
 
 // Fetch HF tokens from server on load
-fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || ''; HF_TOKEN_BACKUP = d.backup || ''; });
+fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || ''; HF_TOKEN_BACKUP = d.backup || ''; HF_TOKEN_BACKUP2 = d.backup2 || ''; });
 
 function getCreditsUsed() { return parseInt(localStorage.getItem(CREDITS_KEY) || '0'); }
 function useCredit() { localStorage.setItem(CREDITS_KEY, getCreditsUsed() + 1); updateCreditDisplay(); }
@@ -152,10 +153,7 @@ window.startTryOn = async function() {
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.tryOnImage || selectedProduct.images[0]}`;
     const session_hash = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 
-    // Try primary token, fallback to backup on quota error
-    let token = HF_TOKEN;
-    let tried_backup = false;
-
+    // Try primary token, fallback to backup 1, then backup 2 on quota error
     const attempt = async (tok) => {
       updateLoadingText('Uploading your photo... 📸');
       const humanPath = await uploadToHF(userPhotoFile, tok);
@@ -193,13 +191,20 @@ window.startTryOn = async function() {
 
     let resultUrl;
     try {
-      resultUrl = await attempt(token);
+      resultUrl = await attempt(HF_TOKEN);
     } catch (err) {
-      // If quota error and backup token exists, retry with backup
-      if (err.message && err.message.toLowerCase().includes('quota') && HF_TOKEN_BACKUP && !tried_backup) {
-        tried_backup = true;
-        updateLoadingText('Switching to backup... 🔄');
-        resultUrl = await attempt(HF_TOKEN_BACKUP);
+      if (err.message && err.message.toLowerCase().includes('quota') && HF_TOKEN_BACKUP) {
+        try {
+          updateLoadingText('Switching to backup 1... 🔄');
+          resultUrl = await attempt(HF_TOKEN_BACKUP);
+        } catch (err2) {
+          if (err2.message && err2.message.toLowerCase().includes('quota') && HF_TOKEN_BACKUP2) {
+            updateLoadingText('Switching to backup 2... 🔄');
+            resultUrl = await attempt(HF_TOKEN_BACKUP2);
+          } else {
+            throw err2;
+          }
+        }
       } else {
         throw err;
       }
