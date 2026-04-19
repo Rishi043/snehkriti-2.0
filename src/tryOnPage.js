@@ -257,11 +257,15 @@ window.resetResult = function() {
   document.getElementById('result-idle').classList.remove('hidden');
 };
 
-window.downloadResult = function() {
+window.downloadResult = async function() {
   const img = document.getElementById('result-img').src;
+  const res = await fetch(`/api/fetch-image?url=${encodeURIComponent(img)}`);
+  const blob = await res.blob();
   const a = document.createElement('a');
-  a.href = img; a.download = `snehkriti-tryon-${selectedProduct.name}.jpg`;
+  a.href = URL.createObjectURL(blob);
+  a.download = `snehkriti-tryon-${selectedProduct.name}.jpg`;
   a.click();
+  URL.revokeObjectURL(a.href);
 };
 
 window.addSelectedToCart = function() {
