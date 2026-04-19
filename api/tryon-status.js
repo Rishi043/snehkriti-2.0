@@ -1,16 +1,30 @@
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  const apiKey = process.env.REPLICATE_API_KEY || process.env.VITE_REPLICATE_API_KEY;
-  if (!apiKey) return res.status(500).json({ error: 'API key not configured on server' });
+  const hfToken = process.env.HF_TOKEN;
+  if (!hfToken) return res.status(500).json({ error: 'HF_TOKEN not configured on server' });
 
-  const { id } = req.query;
-  if (!id) return res.status(400).json({ error: 'Missing prediction id' });
+  const { session_hash } = req.query;
+  if (!session_hash) return res.status(400).json({ error: 'Missing session_hash' });
 
-  const response = await fetch(`https://api.replicate.com/v1/predictions/${id}`, {
-    headers: { 'Authorization': `Token ${apiKey}` }
-  });
+  const statusRes = await fetch(
+    `https://yisol-idm-vton.hf.space/queue/status?session_hash=${session_hash}`,
+    { headers: { 'Authorization': `Bearer ${hfToken}` } }
+  );
 
-  const data = await response.json();
-  res.status(200).json({ status: data.status, output: data.output, error: data.error });
+  if (!statusRes.ok) return res.status(502).json({ error: 'Status check failed' });
+
+  const data = await statusRes.json();
+
+  if (data.status === 'complete' && data.output?.data?.[0]) {
+    const output = data.output.data[0];
+    const imageUrl = typeof output === 'string' ? output : (output.url || output.path);
+    return res.status(200).json({ status: 'complete', output: imageUrl });
+  }
+
+  if (data.status === 'error') {
+    return res.status(200).json({ status: 'error', error: data.output || 'Processing failed' });
+  }
+
+  return res.status(200).json({ status: data.status, queue_position: data.queue_size });
 }

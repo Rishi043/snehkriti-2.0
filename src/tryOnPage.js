@@ -113,7 +113,8 @@ window.startTryOn = async function() {
   try {
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
 
-    const response = await fetch('/api/tryon', {
+    // Step 1: Submit job
+    const submitRes = await fetch('/api/tryon', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -123,17 +124,31 @@ window.startTryOn = async function() {
       })
     });
 
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || JSON.stringify(data));
+    const submitData = await submitRes.json();
+    if (!submitRes.ok) throw new Error(submitData.error || JSON.stringify(submitData));
 
+    // Step 2: Poll for result from browser
+    const resultUrl = await pollStatus(submitData.session_hash);
     useCredit();
-    showResult(data.output);
+    showResult(resultUrl);
 
   } catch (err) {
     console.error('Try-on error:', err);
     showError(err.message || 'Something went wrong. Please try again.');
   }
 };
+
+async function pollStatus(session_hash) {
+  const maxAttempts = 40;
+  for (let i = 0; i < maxAttempts; i++) {
+    await new Promise(r => setTimeout(r, 4000));
+    const res = await fetch(`/api/tryon-status?session_hash=${session_hash}`);
+    const data = await res.json();
+    if (data.status === 'complete') return data.output;
+    if (data.status === 'error') throw new Error(data.error || 'Processing failed');
+  }
+  throw new Error('Timed out — the AI is busy, please try again in a moment.');
+}
 
 // ── UI STATES ─────────────────────────────────────────────────────────────────
 function showLoading() {
