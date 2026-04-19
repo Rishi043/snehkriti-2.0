@@ -130,7 +130,7 @@ window.startTryOn = async function() {
   showLoading();
 
   try {
-    const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
+    const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.tryOnImage || selectedProduct.images[0]}`;
     const session_hash = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 
     // Try primary token, fallback to backup on quota error
@@ -159,7 +159,7 @@ window.startTryOn = async function() {
             { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
             { path: garmPath, url: `${BASE}/file=${garmPath}`, meta: { _type: 'gradio.FileData' } },
             selectedProduct.garmentType || selectedProduct.name,
-            true, false, 40, 42
+            true, true, 40, 42
           ]
         })
       });
