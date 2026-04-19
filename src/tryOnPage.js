@@ -126,27 +126,14 @@ window.startTryOn = async function() {
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || JSON.stringify(data));
 
-    const resultUrl = await pollReplicate(data.id);
     useCredit();
-    showResult(resultUrl);
+    showResult(data.output);
 
   } catch (err) {
     console.error('Try-on error:', err);
     showError(err.message || 'Something went wrong. Please try again.');
   }
 };
-
-async function pollReplicate(id) {
-  const maxAttempts = 40;
-  for (let i = 0; i < maxAttempts; i++) {
-    await new Promise(r => setTimeout(r, 3000));
-    const res = await fetch(`/api/tryon-status?id=${id}`);
-    const data = await res.json();
-    if (data.status === 'succeeded') return Array.isArray(data.output) ? data.output[0] : data.output;
-    if (data.status === 'failed') throw new Error(data.error || 'Try-on failed');
-  }
-  throw new Error('Timed out. Please try again.');
-}
 
 // ── UI STATES ─────────────────────────────────────────────────────────────────
 function showLoading() {
