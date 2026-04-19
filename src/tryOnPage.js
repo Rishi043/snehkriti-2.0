@@ -113,7 +113,6 @@ window.startTryOn = async function() {
   try {
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
 
-    // Step 1: Submit job
     const submitRes = await fetch('/api/tryon', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -127,7 +126,14 @@ window.startTryOn = async function() {
     const submitData = await submitRes.json();
     if (!submitRes.ok) throw new Error(submitData.error || JSON.stringify(submitData));
 
-    // Step 2: Poll for result from browser
+    // Direct result returned
+    if (submitData.mode === 'direct' && submitData.output) {
+      useCredit();
+      showResult(submitData.output);
+      return;
+    }
+
+    // Queue mode — poll from browser
     const resultUrl = await pollStatus(submitData.session_hash);
     useCredit();
     showResult(resultUrl);
