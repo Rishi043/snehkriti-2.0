@@ -8,9 +8,10 @@ const BASE = 'https://yisol-idm-vton.hf.space';
 const MAX_FREE_CREDITS = 200;
 const CREDITS_KEY = 'snehkriti_tryon_credits';
 let HF_TOKEN = '';
+let HF_TOKEN_BACKUP = '';
 
-// Fetch HF token from server on load
-fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || ''; });
+// Fetch HF tokens from server on load
+fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || ''; HF_TOKEN_BACKUP = d.backup || ''; });
 
 function getCreditsUsed() { return parseInt(localStorage.getItem(CREDITS_KEY) || '0'); }
 function useCredit() { localStorage.setItem(CREDITS_KEY, getCreditsUsed() + 1); updateCreditDisplay(); }
@@ -96,12 +97,12 @@ function checkReady() {
 }
 
 // ── UPLOAD FILE TO HF SPACE ───────────────────────────────────────────────────
-async function uploadToHF(file) {
+async function uploadToHF(file, tok) {
   const form = new FormData();
   form.append('files', file);
   const res = await fetch(`${BASE}/upload`, {
     method: 'POST',
-    headers: HF_TOKEN ? { 'Authorization': `Bearer ${HF_TOKEN}` } : {},
+    headers: tok ? { 'Authorization': `Bearer ${tok}` } : {},
     body: form
   });
   if (!res.ok) throw new Error('Image upload to HF failed');
@@ -110,13 +111,12 @@ async function uploadToHF(file) {
 }
 
 // ── FETCH GARMENT AS BLOB AND UPLOAD ─────────────────────────────────────────
-async function uploadGarmentToHF(url) {
-  // Use our proxy to avoid CORS when fetching garment image
+async function uploadGarmentToHF(url, tok) {
   const res = await fetch(`/api/fetch-image?url=${encodeURIComponent(url)}`);
   if (!res.ok) throw new Error('Failed to fetch garment image');
   const blob = await res.blob();
   const file = new File([blob], 'garment.jpg', { type: 'image/jpeg' });
-  return uploadToHF(file);
+  return uploadToHF(file, tok);
 }
 
 // ── TRY ON ────────────────────────────────────────────────────────────────────
@@ -130,39 +130,58 @@ window.startTryOn = async function() {
   showLoading();
 
   try {
-    const session_hash = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
+    const session_hash = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
 
-    // Always re-upload fresh for each run
-    updateLoadingText('Uploading your photo... 📸');
-    const humanPath = await uploadToHF(userPhotoFile);
+    // Try primary token, fallback to backup on quota error
+    let token = HF_TOKEN;
+    let tried_backup = false;
 
-    updateLoadingText('Uploading garment... 👕');
-    const garmPath = await uploadGarmentToHF(garmentUrl);
+    const attempt = async (tok) => {
+      updateLoadingText('Uploading your photo... 📸');
+      const humanPath = await uploadToHF(userPhotoFile, tok);
 
-    updateLoadingText('AI is working its magic... ✨ (30-60 sec)');
+      updateLoadingText('Uploading garment... 👕');
+      const garmPath = await uploadGarmentToHF(garmentUrl, tok);
 
-    const joinRes = await fetch(`${BASE}/queue/join`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(HF_TOKEN ? { 'Authorization': `Bearer ${HF_TOKEN}` } : {})
-      },
-      body: JSON.stringify({
-        fn_index: 2,
-        session_hash,
-        data: [
-          { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
-          { path: garmPath, url: `${BASE}/file=${garmPath}`, meta: { _type: 'gradio.FileData' } },
-          selectedProduct.name,
-          true, false, 30, 42
-        ]
-      })
-    });
+      updateLoadingText('AI is working its magic... ✨ (30-60 sec)');
 
-    if (!joinRes.ok) throw new Error('Failed to submit job to AI');
+      const joinRes = await fetch(`${BASE}/queue/join`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(tok ? { 'Authorization': `Bearer ${tok}` } : {})
+        },
+        body: JSON.stringify({
+          fn_index: 2,
+          session_hash,
+          data: [
+            { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
+            { path: garmPath, url: `${BASE}/file=${garmPath}`, meta: { _type: 'gradio.FileData' } },
+            selectedProduct.name,
+            true, false, 30, 42
+          ]
+        })
+      });
 
-    const resultUrl = await pollHF(session_hash);
+      if (!joinRes.ok) throw new Error('Failed to submit job to AI');
+      return await pollHF(session_hash, tok);
+    };
+
+    let resultUrl;
+    try {
+      resultUrl = await attempt(token);
+    } catch (err) {
+      // If quota error and backup token exists, retry with backup
+      if (err.message && err.message.toLowerCase().includes('quota') && HF_TOKEN_BACKUP && !tried_backup) {
+        tried_backup = true;
+        updateLoadingText('Switching to backup... 🔄');
+        resultUrl = await attempt(HF_TOKEN_BACKUP);
+      } else {
+        throw err;
+      }
+    }
+
     useCredit();
     showResult(resultUrl);
 
@@ -172,13 +191,13 @@ window.startTryOn = async function() {
   }
 };
 
-async function pollHF(session_hash) {
+async function pollHF(session_hash, tok) {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       reject(new Error('Timed out — please try again in a moment.'));
-    }, 180000); // 3 min max
+    }, 180000);
 
-    const es = new EventSource(`${BASE}/queue/data?session_hash=${session_hash}${HF_TOKEN ? '&token=' + HF_TOKEN : ''}`);
+    const es = new EventSource(`${BASE}/queue/data?session_hash=${session_hash}${tok ? '&token=' + tok : ''}`);
 
     es.onmessage = (event) => {
       try {
