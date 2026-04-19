@@ -164,20 +164,48 @@ window.startTryOn = async function() {
 };
 
 async function pollHF(session_hash) {
-  for (let i = 0; i < 40; i++) {
-    await new Promise(r => setTimeout(r, 4000));
-    const res = await fetch(`${BASE}/queue/status?session_hash=${session_hash}`);
-    if (!res.ok) continue;
-    const data = await res.json();
-    if (data.status === 'complete' && data.output?.data?.[0]) {
-      const out = data.output.data[0];
-      return out?.url || (out?.path ? `${BASE}/file=${out.path}` : null);
-    }
-    if (data.status === 'error') throw new Error(data.output || 'AI processing failed');
-    // Update queue position
-    if (data.queue_size > 0) updateLoadingText(`In queue... position ${data.queue_size} ⏳`);
-  }
-  throw new Error('Timed out — please try again in a moment.');
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      reject(new Error('Timed out — please try again in a moment.'));
+    }, 180000); // 3 min max
+
+    const es = new EventSource(`${BASE}/queue/data?session_hash=${session_hash}`);
+
+    es.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        if (data.msg === 'queue_full') {
+          es.close(); clearTimeout(timeout);
+          reject(new Error('Queue is full — please try again in a moment.'));
+        }
+        if (data.msg === 'estimation') {
+          const pos = data.rank ?? data.queue_size;
+          if (pos > 0) updateLoadingText(`In queue... position ${pos} ⏳`);
+        }
+        if (data.msg === 'process_starts') {
+          updateLoadingText('AI is generating your look... ✨');
+        }
+        if (data.msg === 'process_completed') {
+          es.close(); clearTimeout(timeout);
+          const out = data.output?.data?.[0];
+          if (!out) return reject(new Error('No output received'));
+          const url = out?.url || (out?.path ? `${BASE}/file=${out.path}` : null);
+          if (!url) return reject(new Error('Could not get result image URL'));
+          resolve(url);
+        }
+        if (data.msg === 'process_errored') {
+          es.close(); clearTimeout(timeout);
+          reject(new Error(data.output?.error || 'AI processing failed'));
+        }
+      } catch(e) { /* ignore parse errors */ }
+    };
+
+    es.onerror = () => {
+      es.close(); clearTimeout(timeout);
+      reject(new Error('Connection lost — please try again.'));
+    };
+  });
 }
 
 function updateLoadingText(msg) {
