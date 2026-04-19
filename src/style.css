@@ -584,7 +584,7 @@
 /* Price tag */
 .price-tag { position: relative; }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     .product-grid { grid-template-columns: repeat(2, 1fr); }
     .size-options { gap: 0.4rem; }
     .form-field { padding: 0.75rem; }
@@ -594,6 +594,7 @@
     .submit-btn { padding: 0.8rem 1.5rem; font-size: 1.1rem; }
     .submit-btn-outline { padding: 0.7rem 1.2rem; font-size: 1rem; }
     .summary-card { position: static !important; }
+    .tryon-banner-text { font-size: 1.5rem !important; }
 }
 
 /* Global overflow fix */

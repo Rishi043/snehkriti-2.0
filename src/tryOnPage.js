@@ -17,11 +17,7 @@ fetch('/api/hf-token').then(r => r.json()).then(d => { HF_TOKEN = d.token || '';
 function getCreditsUsed() { return parseInt(localStorage.getItem(CREDITS_KEY) || '0'); }
 function useCredit() { localStorage.setItem(CREDITS_KEY, getCreditsUsed() + 1); updateCreditDisplay(); }
 function updateCreditDisplay() {
-  const remaining = MAX_FREE_CREDITS - getCreditsUsed();
-  const el = document.getElementById('credit-counter');
-  if (!el) return;
-  el.textContent = `✨ ${remaining} free try-ons remaining`;
-  el.style.color = remaining <= 20 ? '#e91e63' : '#d4a373';
+  // credit counter removed from UI
 }
 
 let userPhotoFile = null;
