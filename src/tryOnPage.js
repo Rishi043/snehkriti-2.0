@@ -122,10 +122,10 @@ window.startTryOn = async function() {
   showLoading();
 
   try {
-    const session_hash = Math.random().toString(36).slice(2);
+    const session_hash = Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
     const garmentUrl = `https://snehkriti-2-0.vercel.app${selectedProduct.images[0]}`;
 
-    // Upload both images to HF Space
+    // Always re-upload fresh for each run
     updateLoadingText('Uploading your photo... 📸');
     const humanPath = await uploadToHF(userPhotoFile);
 
@@ -134,7 +134,6 @@ window.startTryOn = async function() {
 
     updateLoadingText('AI is working its magic... ✨ (30-60 sec)');
 
-    // Submit job to HF queue
     const joinRes = await fetch(`${BASE}/queue/join`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -152,7 +151,6 @@ window.startTryOn = async function() {
 
     if (!joinRes.ok) throw new Error('Failed to submit job to AI');
 
-    // Poll for result
     const resultUrl = await pollHF(session_hash);
     useCredit();
     showResult(resultUrl);
@@ -188,10 +186,14 @@ async function pollHF(session_hash) {
         }
         if (data.msg === 'process_completed') {
           es.close(); clearTimeout(timeout);
-          const out = data.output?.data?.[0];
+          const outputData = data.output?.data;
+          if (!outputData) return reject(new Error('No output received'));
+          // Try index 0 first (result), fallback to index 1 (also result in some versions)
+          const out = outputData[0] || outputData[1];
           if (!out) return reject(new Error('No output received'));
-          const url = out?.url || (out?.path ? `${BASE}/file=${out.path}` : null);
-          if (!url) return reject(new Error('Could not get result image URL'));
+          const url = out?.url || (out?.path ? `${BASE}/file=${out.path}` : null)
+                    || (typeof out === 'string' ? out : null);
+          if (!url) return reject(new Error('No output received'));
           resolve(url);
         }
         if (data.msg === 'process_errored') {
