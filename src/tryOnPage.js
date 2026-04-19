@@ -146,6 +146,8 @@ window.startTryOn = async function() {
 
       updateLoadingText('AI is working its magic... ✨ (30-60 sec)');
 
+      console.log('humanPath:', humanPath, 'garmPath:', garmPath);
+
       const joinRes = await fetch(`${BASE}/queue/join`, {
         method: 'POST',
         headers: {
@@ -156,10 +158,12 @@ window.startTryOn = async function() {
           fn_index: 2,
           session_hash,
           data: [
-            { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
-            { path: garmPath, url: `${BASE}/file=${garmPath}`, meta: { _type: 'gradio.FileData' } },
+            // Human: ImageEditor format — background must be FileData object
+            { background: { path: humanPath, url: `${BASE}/file=${humanPath}`, orig_name: 'human.jpg', meta: { _type: 'gradio.FileData' } }, layers: [], composite: null },
+            // Garment: plain FileData
+            { path: garmPath, url: `${BASE}/file=${garmPath}`, orig_name: 'garment.jpg', meta: { _type: 'gradio.FileData' } },
             selectedProduct.garmentType || selectedProduct.name,
-            true, true, 40, 42
+            true, false, 40, 42
           ]
         })
       });
