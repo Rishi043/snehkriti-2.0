@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout | SNEHKRITI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@400;600;700&family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+  <style>
+    .co-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: #7a6555;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .co-input {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: #2d1f14;
+      background: #fff;
+      border: 1.5px solid #ddd0c4;
+      border-radius: 10px;
+      padding: 0.65rem 0.9rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .co-input:focus {
+      border-color: #d4a373;
+      box-shadow: 0 0 0 3px rgba(212,163,115,0.12);
+    }
+    .co-input::placeholder { color: #bba898; font-size: 0.88rem; }
+    .co-input:disabled { background: #f8f4f0; color: #888; cursor: not-allowed; }
+    .co-field { margin-bottom: 1rem; }
+    .co-prefix {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #5e503f;
+      background: #f8edeb;
+      padding: 0.65rem 0.8rem;
+      border-radius: 10px;
+      border: 1.5px solid #ddd0c4;
+      white-space: nowrap;
+    }
+    .pin-status {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+  </style>
+</head>
+<body class="bg-[#f8f1f0] text-[#5e503f] font-['Playfair_Display']">
+
+  <!-- Mobile Top Header -->
+  <div class="mobile-top-header">
+    <a href="index.html" class="logo-text"><span style="font-family:'Hind',sans-serif;font-weight:600;color:#a17852;">स्नेह</span><span style="font-family:'Homemade Apple',cursive;font-style:italic;color:#d4a373;">Kriti</span></a>
+    <a href="cart.html" class="cart-icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4a373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg><span class="cart-badge" id="cart-count-badge">0</span></a>
+  </div>
+  <div class="mobile-search-bar"><input type="search" placeholder="Search products..."></div>
+  <div class="mobile-filter-scroll">
+    <button class="filter-pill active">All</button>
+    <button class="filter-pill">Tees</button>
+    <button class="filter-pill">Hoodies</button>
+    <button class="filter-pill">Anime</button>
+    <button class="filter-pill">Zodiac</button>
+    <button class="filter-pill">K-Pop</button>
+  </div>
+  <header class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-[#f8edeb] opacity-60"></div>
+    <div class="relative z-10 container mx-auto px-4 py-8 flex flex-col items-center">
+      <h1 class="text-5xl md:text-7xl font-bold text-[#d4a373] mb-1 flex items-center justify-center gap-2">
+        <span class="handwritten" style="font-family:'Hind',sans-serif;font-weight:600;color:#a17852;">स्नेह</span>
+        <span class="letter italic" style="font-family:'Homemade Apple',cursive;transform:rotate(-2deg);color:#d4a373;">Kriti</span>
+      </h1>
+      <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.5rem;letter-spacing:7px;color:#a17852;text-transform:uppercase;opacity:0.75;margin-bottom:0.75rem;">Customised Clothes</p>
+      <p class="text-xl md:text-2xl handwritten text-[#6c757d] italic">Printed with Love. Felt like a Hug.</p>
+    </div>
+  </header>
+
+        <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+     <!-- Desktop nav -->
+     <ul class="hidden md:flex list-none justify-center gap-x-8 py-4 handwritten text-xl">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="index.html#home" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Shop All</a></li>
+     </ul>
+     <!-- Mobile hamburger bar -->
+     <div class="md:hidden px-4 py-3">
+       <button id="nav-toggle" onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');this.classList.toggle('open');" class="flex flex-col gap-1.5 p-1 focus:outline-none relative w-7 h-7">
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300"></span>
+         <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
+       </button>
+     </div>
+     <!-- Mobile dropdown -->
+     <ul id="nav-menu" class="hidden md:hidden flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20">
+       <li class="py-3 md:py-0 border-b border-[#d4a373] border-opacity-10"><a href="index.html#home" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Home</a></li>
+       <li class="py-3 md:py-0"><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300 block md:inline">Shop All</a></li>
+     </ul>
+   </nav>
+
+  <section class="py-10 px-4">
+    <div class="container mx-auto max-w-4xl">
+      <h2 class="text-4xl handwritten font-bold text-center mb-1 gradient-text">Almost There! 🌸</h2>
+      <p class="handwritten text-lg text-[#6c757d] italic text-center mb-8">Just a few details and your piece is on its way ✨</p>
+
+      <div class="flex flex-col gap-6">
+
+        <!-- ORDER SUMMARY FIRST -->
+        <div class="summary-card" style="border:1px solid rgba(212,163,115,0.2);">
+          <h3 class="handwritten text-2xl font-bold text-[#d4a373] mb-4">Order Summary</h3>
+          <div id="order-summary"></div>
+        </div>
+
+        <!-- FORM BELOW -->
+        <form id="checkout-form" class="bg-white rounded-2xl p-6 shadow-sm" style="border:1px solid rgba(212,163,115,0.2);" novalidate>
+
+          <div class="co-field">
+            <label class="co-label" for="name">Full Name <span style="color:#e91e63">*</span></label>
+            <input id="name" type="text" class="co-input" placeholder="e.g. Priya Sharma">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="phone">Phone Number <span style="color:#e91e63">*</span></label>
+            <div class="flex items-center gap-2">
+              <span class="co-prefix">+91</span>
+              <input id="phone" type="tel" class="co-input" placeholder="10-digit mobile number">
+            </div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="email">Email <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <input id="email" type="email" class="co-input" placeholder="yourname@email.com">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="pincode">Pincode <span style="color:#e91e63">*</span></label>
+            <input id="pincode" type="tel" maxlength="6" class="co-input" placeholder="6-digit pincode" oninput="lookupPincode(this.value)">
+            <p id="pin-status" class="pin-status text-[#d4a373]"></p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="co-field">
+              <label class="co-label" for="city">City <span style="color:#e91e63">*</span></label>
+              <input id="city" type="text" class="co-input" placeholder="Auto-filled" readonly>
+            </div>
+            <div class="co-field">
+              <label class="co-label" for="state">State <span style="color:#e91e63">*</span></label>
+              <input id="state" type="text" class="co-input" placeholder="Auto-filled" readonly>
+            </div>
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="address1">Full Address <span style="color:#e91e63">*</span></label>
+            <input id="address1" type="text" class="co-input" placeholder="House No. / Flat / Street / Area / Landmark">
+          </div>
+
+          <div class="co-field">
+            <label class="co-label" for="notes">Order Notes <span style="color:#999;font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+            <textarea id="notes" class="co-input" rows="2" placeholder="Gift wrapping, colour preferences, custom message..."></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn handwritten w-full mt-2" style="font-size:1.2rem;">Place Order 💛</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <a href="cart.html" class="fixed bottom-6 right-6 z-50 group" style="text-decoration:none;">
+    <div style="background:linear-gradient(135deg,#d4a373,#b08968);width:56px;height:56px;border-radius:50%;box-shadow:0 6px 20px rgba(212,163,115,0.55);display:flex;align-items:center;justify-content:center;transition:transform 0.3s;position:relative;" class="group-hover:scale-110">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+      <span id="cart-count-badge-float" style="position:absolute;top:-4px;right:-4px;background:#e91e63;color:white;font-size:0.6rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:700;">0</span>
+    </div>
+  </a>
+
+  <footer class="py-8 px-4 text-center watercolor-bg mt-12">
+    <p class="handwritten text-xl text-[#d4a373]">Made with love & ink-stained hands 🌸</p>
+    <p class="handwritten text-lg text-[#6c757d] mt-1">© 2025 SNEHKRITI · <a href="https://www.instagram.com/snehkriti.in/" target="_blank" class="hover:text-[#d4a373]">@snehkriti.in</a></p>
+  </footer>
+
+  <script>
+    window.lookupPincode = async function(pin) {
+      const status = document.getElementById('pin-status');
+      const city = document.getElementById('city');
+      const state = document.getElementById('state');
+      if (pin.length !== 6) {
+        city.value = ''; state.value = '';
+        status.textContent = '';
+        return;
+      }
+      status.textContent = 'Looking up...';
+      status.style.color = '#d4a373';
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const data = await res.json();
+        if (data[0].Status === 'Success') {
+          const po = data[0].PostOffice[0];
+          city.value = po.District;
+          state.value = po.State;
+          status.textContent = '✓ ' + po.Name + ', ' + po.District;
+          status.style.color = '#22c55e';
+        } else {
+          city.value = ''; state.value = '';
+          status.textContent = 'Invalid pincode';
+          status.style.color = '#e91e63';
+        }
+      } catch {
+        status.textContent = 'Could not fetch — enter manually';
+        status.style.color = '#e91e63';
+        city.removeAttribute('readonly');
+        state.removeAttribute('readonly');
+      }
+    };
+  </script>
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item" id="nav-home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="products.html" class="nav-item" id="nav-products"><span class="nav-icon">👕</span><span class="nav-label">Products</span></a>
+    <a href="cart.html" class="nav-item" id="nav-cart"><span class="nav-icon">🛒</span><span class="nav-label">Cart</span></a>
+    <a href="my-orders.html" class="nav-item" id="nav-orders"><span class="nav-icon">📦</span><span class="nav-label">My Orders</span></a>
+  </nav>
+  <script>const isApp=window.Capacitor!==undefined||window.innerWidth<768;if(isApp)document.body.classList.add('is-app');</script>
+  <script type="module" src="src/checkoutPage.js"></script>
+</body>
+</html>

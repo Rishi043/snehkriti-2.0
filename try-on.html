@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Virtual Try-On | SNEHKRITI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Homemade+Apple&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/style.css">
+  <style>
+    .upload-zone {
+      border: 2px dashed rgba(212,163,115,0.5);
+      border-radius: 16px;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #d4a373;
+      background: rgba(212,163,115,0.05);
+    }
+    .product-card-try {
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .product-card-try.selected {
+      border-color: #d4a373;
+      box-shadow: 0 0 0 4px rgba(212,163,115,0.35);
+      transform: scale(1.04);
+    }
+    .product-card-try.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 5px; right: 5px;
+      width: 20px; height: 20px;
+      background: #d4a373;
+      color: white;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    @media (max-width: 767px) {
+      .tryon-page-header h2 { font-size: 1.8rem !important; white-space: nowrap; }
+      .tryon-page-header p { font-size: 0.85rem !important; }
+      .tryon-banner-text { font-size: 1.1rem !important; white-space: nowrap; }
+      .tryon-steps { gap: 0.5rem !important; margin-bottom: 1.5rem !important; }
+      .tryon-steps span { font-size: 0.9rem !important; }
+      .upload-hint { white-space: nowrap; font-size: 0.75rem !important; }
+      .tryon-btn-main {
+        background: linear-gradient(135deg, #d4a373, #b08968) !important;
+        border-radius: 50px !important;
+        font-size: 1.1rem !important;
+        padding: 14px 20px !important;
+        box-shadow: 0 6px 20px rgba(212,163,115,0.45) !important;
+        position: relative;
+        overflow: hidden;
+      }
+      .tryon-btn-main::before {
+        content: '';
+        position: absolute;
+        top: 0; left: -100%;
+        width: 100%; height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+        transition: left 0.5s;
+      }
+      .tryon-btn-main:not(:disabled):hover::before { left: 100%; }
+    }
+    .result-shimmer {
+      background: linear-gradient(90deg, #f8edeb 25%, #fae1dd 50%, #f8edeb 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .step-badge {
+      width: 28px; height: 28px;
+      background: #d4a373;
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Caveat', cursive;
+      font-size: 1rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="bg-[#f8f1f0] text-[#5e503f] font-['Playfair_Display']">
+
+  <!-- Mobile Top Header -->
+  <div class="mobile-top-header">
+    <a href="index.html" class="logo-text"><span style="font-family:'Hind',sans-serif;font-weight:600;color:#a17852;">स्नेह</span><span style="font-family:'Homemade Apple',cursive;font-style:italic;color:#d4a373;">Kriti</span></a>
+    <a href="cart.html" class="cart-icon-btn"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4a373" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg><span class="cart-badge" id="cart-count-badge">0</span></a>
+  </div>
+  <div class="mobile-search-bar"><input type="search" placeholder="Search products..."></div>
+  <div class="mobile-filter-scroll">
+    <button class="filter-pill active">All</button>
+    <button class="filter-pill">Tees</button>
+    <button class="filter-pill">Hoodies</button>
+    <button class="filter-pill">Anime</button>
+    <button class="filter-pill">Zodiac</button>
+    <button class="filter-pill">K-Pop</button>
+  </div>
+  <header class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-[#f8edeb] opacity-60"></div>
+    <div class="relative z-10 container mx-auto px-4 py-8 flex flex-col items-center">
+      <h1 class="text-5xl md:text-7xl font-bold text-[#d4a373] mb-1 flex items-center justify-center gap-2">
+        <span class="handwritten" style="font-family:'Hind',sans-serif;font-weight:600;color:#a17852;">स्नेह</span>
+        <span class="letter italic" style="font-family:'Homemade Apple',cursive;transform:rotate(-2deg);color:#d4a373;">Kriti</span>
+      </h1>
+      <p style="font-family:'Montserrat',sans-serif;font-weight:300;font-size:0.5rem;letter-spacing:7px;color:#a17852;text-transform:uppercase;opacity:0.75;margin-bottom:0.75rem;">Customised Clothes</p>
+      <p class="text-xl md:text-2xl handwritten text-[#6c757d] italic">Printed with Love. Felt like a Hug.</p>
+    </div>
+  </header>
+
+  <nav class="sticky top-0 bg-[#f8f1f0] bg-opacity-95 z-50 border-b-2 border-[#d4a373] border-opacity-30 backdrop-blur-lg">
+    <ul class="hidden md:flex list-none justify-center gap-x-8 py-4 handwritten text-xl">
+      <li><a href="index.html#home" class="hover:text-[#d4a373] transition-all duration-300">Home</a></li>
+      <li><a href="index.html#gallery" class="hover:text-[#d4a373] transition-all duration-300">Gallery</a></li>
+      <li><a href="products.html" class="hover:text-[#d4a373] transition-all duration-300">Collections</a></li>
+      <li><a href="index.html#about" class="hover:text-[#d4a373] transition-all duration-300">Our Story</a></li>
+      <li><a href="my-orders.html" class="hover:text-[#d4a373] transition-all duration-300">My Orders</a></li>
+    </ul>
+    <div class="md:hidden px-4 py-3">
+      <button id="nav-toggle" onclick="var m=document.getElementById('nav-menu');m.classList.toggle('hidden');this.classList.toggle('open');" class="flex flex-col gap-1.5 p-1 focus:outline-none relative w-7 h-7">
+        <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
+        <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300"></span>
+        <span class="nav-bar block w-6 h-0.5 bg-[#d4a373] transition-all duration-300 origin-center"></span>
+      </button>
+    </div>
+    <ul id="nav-menu" class="hidden md:hidden flex-col px-6 pb-4 handwritten text-xl border-t border-[#d4a373] border-opacity-20">
+      <li class="py-3 border-b border-[#d4a373] border-opacity-10"><a href="index.html#home" class="hover:text-[#d4a373] block">Home</a></li>
+      <li class="py-3 border-b border-[#d4a373] border-opacity-10"><a href="index.html#gallery" class="hover:text-[#d4a373] block">Gallery</a></li>
+      <li class="py-3 border-b border-[#d4a373] border-opacity-10"><a href="products.html" class="hover:text-[#d4a373] block">Collections</a></li>
+      <li class="py-3 border-b border-[#d4a373] border-opacity-10"><a href="index.html#about" class="hover:text-[#d4a373] block">Our Story</a></li>
+      <li class="py-3"><a href="my-orders.html" class="hover:text-[#d4a373] block">My Orders</a></li>
+    </ul>
+  </nav>
+
+  <section class="py-12 px-4">
+    <div class="container mx-auto max-w-4xl">
+
+      <!-- Header -->
+      <div class="text-center mb-6 tryon-page-header">
+        <span class="handwritten text-[#d4a373] text-lg italic opacity-70">see it before you wear it</span>
+        <h2 class="handwritten font-bold text-[#d4a373] mt-1 mb-3" style="font-size:2.8rem;">Virtual Try-On ✨</h2>
+        <p class="handwritten text-lg text-[#6c757d] italic max-w-xl mx-auto">Upload your photo, pick a design, and see how it looks on you — powered by AI 🎨</p>
+      </div>
+
+      <!-- Steps -->
+      <div class="flex items-center justify-center gap-4 mb-8 flex-wrap tryon-steps">
+        <div class="flex items-center gap-2"><div class="step-badge">1</div><span class="handwritten text-lg text-[#5e503f]">Upload Photo</span></div>
+        <div class="text-[#d4a373] opacity-40 text-2xl">→</div>
+        <div class="flex items-center gap-2"><div class="step-badge">2</div><span class="handwritten text-lg text-[#5e503f]">Pick Design</span></div>
+        <div class="text-[#d4a373] opacity-40 text-2xl">→</div>
+        <div class="flex items-center gap-2"><div class="step-badge">3</div><span class="handwritten text-lg text-[#5e503f]">See Result</span></div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+
+        <!-- Left: Inputs -->
+        <div class="space-y-6">
+
+          <!-- Step 1: Upload photo -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#d4a373] border-opacity-20">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="step-badge">1</div>
+              <h3 class="handwritten text-xl font-bold text-[#d4a373]">Your Photo</h3>
+            </div>
+            <div class="upload-zone p-6 text-center" id="upload-zone" onclick="document.getElementById('photo-input').click()">
+              <div id="upload-preview" class="hidden">
+                <img id="preview-img" class="max-h-48 mx-auto rounded-xl object-contain mb-2">
+                <p class="handwritten text-sm text-[#d4a373]">Tap to change photo</p>
+              </div>
+              <div id="upload-placeholder">
+                <div class="text-4xl mb-3">📸</div>
+                <p class="handwritten text-lg text-[#d4a373] mb-1">Tap to upload your photo</p>
+                <p class="text-xs text-[#999] upload-hint" style="font-family:'DM Sans',sans-serif;">Full body photo works best · JPG or PNG</p>
+              </div>
+            </div>
+            <input type="file" id="photo-input" accept="image/*" class="hidden">
+            <!-- Example photos -->
+            <div class="mt-3">
+              <p class="handwritten text-sm text-[#6c757d] text-center mb-2">or try with an example 👇</p>
+              <div class="flex gap-3 justify-center">
+                <div onclick="useExample('female')" class="example-photo cursor-pointer rounded-xl overflow-hidden border-2 border-transparent hover:border-[#d4a373] transition-all duration-300 hover:scale-105" style="width:72px;height:96px;">
+                  <img src="/images/female_example.png" alt="Female Example" class="w-full h-full object-cover object-top">
+                  <p class="handwritten text-xs text-center text-[#d4a373] mt-1">Female</p>
+                </div>
+                <div onclick="useExample('male')" class="example-photo cursor-pointer rounded-xl overflow-hidden border-2 border-transparent hover:border-[#d4a373] transition-all duration-300 hover:scale-105" style="width:72px;height:96px;">
+                  <img src="/images/male_example.png" alt="Male Example" class="w-full h-full object-cover object-top">
+                  <p class="handwritten text-xs text-center text-[#d4a373] mt-1">Male</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Pick product -->
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#d4a373] border-opacity-20">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="step-badge">2</div>
+              <h3 class="handwritten text-xl font-bold text-[#d4a373]">Pick a Design</h3>
+            </div>
+            <div class="grid grid-cols-3 gap-3" id="product-grid"></div>
+          </div>
+
+          <!-- Try On Button -->
+          <button id="tryon-btn" onclick="startTryOn()"
+            class="w-full handwritten text-xl py-4 rounded-full opacity-50 cursor-not-allowed tryon-btn-main"
+            style="background:linear-gradient(135deg,#d4a373,#b08968);color:white;border:none;font-weight:700;box-shadow:0 6px 20px rgba(212,163,115,0.45);transition:all 0.3s;"
+            disabled>
+            ✨ Try It On
+          </button>
+          <p id="btn-hint" class="text-center text-xs text-[#999] handwritten mt-2" style="font-family:'DM Sans',sans-serif;">Upload photo &amp; select a design to continue</p>
+          <!-- Testing note -->
+          <div class="mt-3 rounded-2xl px-4 py-3 text-center" style="background:linear-gradient(135deg,#feeafa,#f8edeb);border:1px dashed rgba(212,163,115,0.4);">
+            <p class="handwritten text-sm text-[#d4a373]">🧪 Beta feature — results may vary as we improve it with love! 🌸</p>
+          </div>
+        </div>
+
+        <!-- Right: Result -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-[#d4a373] border-opacity-20 md:sticky md:top-24 md:self-start">
+          <div class="flex items-center gap-2 mb-4">
+            <div class="step-badge">3</div>
+            <h3 class="handwritten text-xl font-bold text-[#d4a373]">Your Look</h3>
+          </div>
+
+          <!-- Idle state -->
+          <div id="result-idle" class="flex flex-col items-center justify-center py-16 text-center">
+            <div class="text-5xl mb-4">🪞</div>
+            <p class="handwritten text-lg text-[#d4a373] mb-1">Your result will appear here</p>
+            <p class="handwritten text-sm text-[#6c757d] italic">Upload photo &amp; pick a design to start</p>
+          </div>
+
+          <!-- Loading state -->
+          <div id="result-loading" class="hidden flex flex-col items-center justify-center py-8 text-center">
+            <div class="result-shimmer w-full rounded-xl mb-4" style="height:280px;"></div>
+            <p class="handwritten text-lg text-[#d4a373] animate-pulse">AI is working its magic... ✨</p>
+            <p class="handwritten text-sm text-[#6c757d] italic mt-1">This takes about 30-60 seconds 🌸</p>
+          </div>
+
+          <!-- Result state -->
+          <div id="result-done" class="hidden flex flex-col">
+            <img id="result-img" class="w-full rounded-2xl object-cover" style="max-height:480px;object-position:top;">
+            <div class="flex gap-3 mt-4">
+              <button onclick="downloadResult()" class="flex-1 flex items-center justify-center gap-2 handwritten text-lg py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg" style="background:linear-gradient(135deg,#2d1f14,#5e3d2c);color:white;box-shadow:0 4px 14px rgba(45,31,20,0.3);">⬇ Download Image</button>
+              <button onclick="addSelectedToCart()" class="flex-1 flex items-center justify-center gap-2 handwritten text-lg py-3 rounded-2xl font-bold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg" style="background:linear-gradient(135deg,#e91e63,#9c27b0);color:white;box-shadow:0 4px 14px rgba(233,30,99,0.35);">🛍️ Add to Cart</button>
+            </div>
+          </div>
+
+          <!-- Error state -->
+          <div id="result-error" class="hidden flex flex-col items-center justify-center py-16 text-center">
+            <div class="text-4xl mb-3">😔</div>
+            <p class="handwritten text-lg text-[#d4a373] mb-1">Something went wrong</p>
+            <p id="error-msg" class="handwritten text-sm text-[#6c757d] italic mb-4"></p>
+            <button onclick="resetResult()" class="submit-btn handwritten text-lg px-6 py-2 rounded-xl">Try Again</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Note -->
+      <div class="mt-8 bg-[#feeafa] rounded-2xl p-4 text-center border border-[#d4a373] border-opacity-20">
+        <p class="handwritten text-base text-[#d4a373]">💡 For best results: use a clear full-body photo with good lighting, standing straight</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Floating Cart -->
+  <a href="cart.html" class="fixed bottom-6 right-6 z-50 group" style="text-decoration:none;">
+    <div style="background:linear-gradient(135deg,#d4a373,#b08968);width:56px;height:56px;border-radius:50%;box-shadow:0 6px 20px rgba(212,163,115,0.55);display:flex;align-items:center;justify-content:center;transition:transform 0.3s;position:relative;" class="group-hover:scale-110">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.99 1.61h9.72a2 2 0 001.99-1.61L23 6H6"/></svg>
+      <span id="cart-count-badge-float" style="position:absolute;top:-4px;right:-4px;background:#e91e63;color:white;font-size:0.6rem;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:700;">0</span>
+    </div>
+  </a>
+
+  <footer class="py-8 px-4 text-center watercolor-bg mt-12">
+    <p class="handwritten text-xl text-[#d4a373]">Made with love & ink-stained hands 🌸</p>
+    <p class="handwritten text-lg text-[#6c757d] mt-1">© 2025 SNEHKRITI · <a href="https://www.instagram.com/snehkriti.in/" target="_blank" class="hover:text-[#d4a373]">@snehkriti.in</a></p>
+  </footer>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item" id="nav-home"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a href="products.html" class="nav-item" id="nav-products"><span class="nav-icon">👕</span><span class="nav-label">Products</span></a>
+    <a href="cart.html" class="nav-item" id="nav-cart"><span class="nav-icon">🛒</span><span class="nav-label">Cart</span></a>
+    <a href="my-orders.html" class="nav-item" id="nav-orders"><span class="nav-icon">📦</span><span class="nav-label">My Orders</span></a>
+  </nav>
+  <script>const isApp=window.Capacitor!==undefined||window.innerWidth<768;if(isApp)document.body.classList.add('is-app');</script>
+  <script type="module" src="src/tryOnPage.js"></script>
+</body>
+</html>
