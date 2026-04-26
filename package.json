@@ -7,7 +7,7 @@
     "preview": "vite preview",
     "cap:sync": "npm run build && npx cap sync",
     "cap:android": "npm run build && npx cap sync && npx cap open android",
-    "build:apk": "npm run build && npx cap sync android && android\\gradlew.bat -p android assembleRelease && copy android\\app\\build\\outputs\\apk\\release\\snehkriti.apk D:\\Users\\OneDrive\\Desktop\\snehkriti.apk"
+    "build:apk": "npm run build && npx cap sync android && android\\gradlew.bat -p android assembleRelease --no-daemon && copy android\\app\\build\\outputs\\apk\\release\\snehkriti.apk D:\\Users\\OneDrive\\Desktop\\snehkriti.apk"
   },
   "dependencies": {
     "@capacitor/android": "^6.2.1",

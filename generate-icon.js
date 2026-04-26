@@ -10,61 +10,66 @@ const sizes = [
   { dir: 'mipmap-xxxhdpi', size: 192 },
 ];
 
-function drawIcon(size) {
-  const canvas = createCanvas(size, size);
+// Draw at 512px master, then scale down — keeps text sharp
+function drawIcon(outputSize) {
+  const MASTER = 512;
+  const canvas = createCanvas(MASTER, MASTER);
   const ctx = canvas.getContext('2d');
-  const s = size;
 
-  // ── SOLID background fill (no transparency) ──
+  // ── Solid cream background ──
   ctx.fillStyle = '#f8edeb';
-  ctx.fillRect(0, 0, s, s);
+  ctx.fillRect(0, 0, MASTER, MASTER);
 
-  // ── Warm center glow ──
-  const glow = ctx.createRadialGradient(s*0.5, s*0.5, 0, s*0.5, s*0.5, s*0.5);
-  glow.addColorStop(0,   'rgba(253,246,240,0.9)');
-  glow.addColorStop(0.5, 'rgba(248,237,235,0.5)');
-  glow.addColorStop(1,   'rgba(240,224,214,0.0)');
+  // ── Decorative border ──
+  ctx.strokeStyle = 'rgba(212,163,115,0.4)';
+  ctx.lineWidth = 10;
+  ctx.strokeRect(20, 20, MASTER - 40, MASTER - 40);
+
+  // ── Inner glow ──
+  const glow = ctx.createRadialGradient(256, 230, 0, 256, 256, 280);
+  glow.addColorStop(0, 'rgba(253,246,240,0.8)');
+  glow.addColorStop(1, 'rgba(248,237,235,0.0)');
   ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, s, s);
+  ctx.fillRect(0, 0, MASTER, MASTER);
 
-  // ── Decorative border ring ──
-  ctx.strokeStyle = 'rgba(212,163,115,0.35)';
-  ctx.lineWidth = Math.max(s * 0.02, 1);
-  ctx.strokeRect(s*0.06, s*0.06, s*0.88, s*0.88);
-
-  // ── "स्नेह" — Hindi bold brown ──
-  const hindiSize = Math.round(s * 0.28);
+  // ── "स्नेह" — Hindi bold brown, large ──
   ctx.fillStyle = '#a17852';
-  ctx.font = `bold ${hindiSize}px Arial`;
+  ctx.font = 'bold 148px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('\u0938\u094D\u0928\u0947\u0939', s * 0.5, s * 0.35);
+  ctx.fillText('\u0938\u094D\u0928\u0947\u0939', 256, 155);
 
   // ── "Kriti" — italic gold ──
-  const kritiSize = Math.round(s * 0.22);
   ctx.fillStyle = '#d4a373';
-  ctx.font = `italic bold ${kritiSize}px Georgia`;
+  ctx.font = 'italic bold 118px Georgia';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('Kriti', s * 0.5, s * 0.60);
+  ctx.fillText('Kriti', 256, 295);
 
-  // ── Divider line ──
-  ctx.strokeStyle = 'rgba(212,163,115,0.5)';
-  ctx.lineWidth = Math.max(s * 0.008, 1);
+  // ── Divider ──
+  ctx.strokeStyle = 'rgba(212,163,115,0.55)';
+  ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(s * 0.2, s * 0.74);
-  ctx.lineTo(s * 0.8, s * 0.74);
+  ctx.moveTo(80, 360);
+  ctx.lineTo(432, 360);
   ctx.stroke();
 
-  // ── "CUSTOMISED CLOTHES" ──
-  const subSize = Math.max(Math.round(s * 0.07), 7);
+  // ── "CUSTOMISED" line 1 ──
   ctx.fillStyle = '#a17852';
-  ctx.font = `${subSize}px Arial`;
+  ctx.font = 'bold 46px Arial';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText('CUSTOMISED CLOTHES', s * 0.5, s * 0.86);
+  ctx.fillText('CUSTOMISED', 256, 400);
 
-  return canvas.toBuffer('image/png');
+  // ── "CLOTHES" line 2 ──
+  ctx.font = 'bold 46px Arial';
+  ctx.fillText('CLOTHES', 256, 455);
+
+  // Scale down to output size
+  const out = createCanvas(outputSize, outputSize);
+  const octx = out.getContext('2d');
+  octx.drawImage(canvas, 0, 0, outputSize, outputSize);
+  return out.toBuffer('image/png');
 }
 
 const resDir = path.join(__dirname, 'android', 'app', 'src', 'main', 'res');
@@ -75,6 +80,7 @@ sizes.forEach(({ dir, size }) => {
   const buf = drawIcon(size);
   fs.writeFileSync(path.join(outDir, 'ic_launcher.png'), buf);
   fs.writeFileSync(path.join(outDir, 'ic_launcher_round.png'), buf);
+  fs.writeFileSync(path.join(outDir, 'ic_launcher_foreground.png'), buf);
   console.log(`✅ ${dir} (${size}x${size})`);
 });
 
